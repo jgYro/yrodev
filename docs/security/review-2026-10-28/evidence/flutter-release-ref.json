@@ -1,0 +1,10 @@
+{
+  "ref": "refs/tags/3.47.8",
+  "node_id": "MDM6UmVmMzE3OTI4MjQ6cmVmcy90YWdzLzMuNDcuOA==",
+  "url": "https://api.github.com/repos/flutter/flutter/git/refs/tags/3.47.8",
+  "object": {
+    "sha": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "type": "commit",
+    "url": "https://api.github.com/repos/flutter/flutter/git/commits/737ba8f885dc774b53b442759999a312c9461e4e"
+  }
+}

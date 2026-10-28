@@ -1,0 +1,1833 @@
+{
+  "checked_utc": "2026-10-28T05:00:58.043452+00:00",
+  "packages": [
+    {
+      "name": "async",
+      "version": "2.13.1",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/async/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/async/versions/2.13.1",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "2.13.1",
+        "pubspec": {
+          "name": "async",
+          "version": "2.13.1",
+          "description": "Utility functions and classes related to the 'dart:async' library.",
+          "repository": "https://github.com/dart-lang/core/tree/main/pkgs/async",
+          "issue_tracker": "https://github.com/dart-lang/core/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Aasync",
+          "topics": [
+            "async"
+          ],
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dependencies": {
+            "collection": "^1.15.0",
+            "meta": "^1.3.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "fake_async": "^1.2.0",
+            "stack_trace": "^1.10.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/async-2.13.1.tar.gz",
+        "archive_sha256": "e2eb0491ba5ddb6177742d2da23904574082139b07c1e33b8503b9f46f3e1a37",
+        "published": "2026-03-26T00:53:13.853173Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/async/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/async-2.13.1.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "e2eb0491ba5ddb6177742d2da23904574082139b07c1e33b8503b9f46f3e1a37",
+        "bytes": 85402,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 82
+      }
+    },
+    {
+      "name": "boolean_selector",
+      "version": "2.1.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/boolean_selector/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/boolean_selector/versions/2.1.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "2.1.2",
+        "pubspec": {
+          "name": "boolean_selector",
+          "version": "2.1.2",
+          "description": "A flexible syntax for boolean expressions, based on a simplified version of Dart's expression syntax.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/boolean_selector",
+          "environment": {
+            "sdk": "^3.1.0"
+          },
+          "dependencies": {
+            "source_span": "^1.8.0",
+            "string_scanner": "^1.1.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/boolean_selector-2.1.2.tar.gz",
+        "archive_sha256": "8aab1771e1243a5063b8b0ff68042d67334e3feab9e95b9490f9a6ebf73b42ea",
+        "published": "2024-10-22T08:24:19.635674Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/boolean_selector/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/boolean_selector-2.1.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "8aab1771e1243a5063b8b0ff68042d67334e3feab9e95b9490f9a6ebf73b42ea",
+        "bytes": 12958,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "test/evaluate_test.dart"
+        ],
+        "regular_files": 27
+      }
+    },
+    {
+      "name": "characters",
+      "version": "1.4.1",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/characters/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/characters/versions/1.4.1",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.4.1",
+        "pubspec": {
+          "name": "characters",
+          "version": "1.4.1",
+          "description": "String replacement with operations that are Unicode/grapheme cluster aware.",
+          "repository": "https://github.com/dart-lang/core/tree/main/pkgs/characters",
+          "issue_tracker": "https://github.com/dart-lang/core/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Acharacters",
+          "topics": [
+            "strings",
+            "unicode"
+          ],
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.1.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/characters-1.4.1.tar.gz",
+        "archive_sha256": "faf38497bda5ead2a8c7615f4f7939df04333478bf32e4173fcb06d428b5716b",
+        "published": "2025-06-25T15:56:32.563783Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/characters/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/characters-1.4.1.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "faf38497bda5ead2a8c7615f4f7939df04333478bf32e4173fcb06d428b5716b",
+        "bytes": 528692,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "tool/src/shared.dart"
+        ],
+        "regular_files": 47
+      }
+    },
+    {
+      "name": "clock",
+      "version": "1.1.3",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/clock/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/clock/versions/1.1.3",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.1.3",
+        "pubspec": {
+          "name": "clock",
+          "version": "1.1.3",
+          "description": "A fakeable wrapper for dart:core clock APIs.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/clock",
+          "issue_tracker": "https://github.com/dart-lang/tools/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Aclock",
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/clock-1.1.3.tar.gz",
+        "archive_sha256": "e51d50bca3217c9a9fa2b41a30e4a38971133f5f9ec7a3d57bae095007f1d28e",
+        "published": "2026-08-28T20:42:07.361034Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/clock/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/clock-1.1.3.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "e51d50bca3217c9a9fa2b41a30e4a38971133f5f9ec7a3d57bae095007f1d28e",
+        "bytes": 11965,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 15
+      }
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/collection/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/collection/versions/1.19.1",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.19.1",
+        "pubspec": {
+          "name": "collection",
+          "version": "1.19.1",
+          "description": "Collections and utilities functions and classes related to collections.",
+          "repository": "https://github.com/dart-lang/core/tree/main/pkgs/collection",
+          "topics": [
+            "collections",
+            "data-structures"
+          ],
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/collection-1.19.1.tar.gz",
+        "archive_sha256": "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76",
+        "published": "2024-10-21T07:34:00.994803Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/collection/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/collection-1.19.1.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76",
+        "bytes": 77897,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 56
+      }
+    },
+    {
+      "name": "cupertino_icons",
+      "version": "1.0.9",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/cupertino_icons/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/cupertino_icons/versions/1.0.9",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.0.9",
+        "pubspec": {
+          "name": "cupertino_icons",
+          "description": "Default icons asset for Cupertino widgets based on Apple styled icons",
+          "repository": "https://github.com/flutter/packages/tree/main/third_party/packages/cupertino_icons",
+          "issue_tracker": "https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+cupertino_icons%22",
+          "version": "1.0.9",
+          "environment": {
+            "sdk": "^3.9.0"
+          },
+          "dev_dependencies": {
+            "collection": "^1.18.0",
+            "flutter": {
+              "sdk": "flutter"
+            },
+            "flutter_test": {
+              "sdk": "flutter"
+            },
+            "path": "^1.9.0"
+          },
+          "flutter": {
+            "fonts": [
+              {
+                "family": "CupertinoIcons",
+                "fonts": [
+                  {
+                    "asset": "assets/CupertinoIcons.ttf"
+                  }
+                ]
+              }
+            ]
+          },
+          "topics": [
+            "assets",
+            "icons",
+            "ui"
+          ]
+        },
+        "archive_url": "https://pub.dev/api/archives/cupertino_icons-1.0.9.tar.gz",
+        "archive_sha256": "41e005c33bd814be4d3096aff55b1908d419fde52ca656c8c47719ec745873cd",
+        "published": "2026-03-25T12:10:06.608710Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/cupertino_icons/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "flutter.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/cupertino_icons-1.0.9.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "41e005c33bd814be4d3096aff55b1908d419fde52ca656c8c47719ec745873cd",
+        "bytes": 2601144,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "test/cupertino_icons_golden_test.dart"
+        ],
+        "regular_files": 77
+      }
+    },
+    {
+      "name": "fake_async",
+      "version": "1.3.3",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/fake_async/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/fake_async/versions/1.3.3",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.3.3",
+        "pubspec": {
+          "name": "fake_async",
+          "version": "1.3.3",
+          "description": "Fake asynchronous events such as timers and microtasks for deterministic testing.",
+          "repository": "https://github.com/dart-lang/test/tree/master/pkgs/fake_async",
+          "issue_tracker": "https://github.com/dart-lang/test/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Afake_async",
+          "environment": {
+            "sdk": "^3.3.0"
+          },
+          "dependencies": {
+            "clock": "^1.1.0",
+            "collection": "^1.15.0"
+          },
+          "dev_dependencies": {
+            "async": "^2.5.0",
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/fake_async-1.3.3.tar.gz",
+        "archive_sha256": "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44",
+        "published": "2025-01-28T15:18:30.551930Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/fake_async/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/fake_async-1.3.3.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44",
+        "bytes": 15216,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 8
+      }
+    },
+    {
+      "name": "flutter_lints",
+      "version": "6.0.0",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/flutter_lints/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/flutter_lints/versions/6.0.0",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "6.0.0",
+        "pubspec": {
+          "name": "flutter_lints",
+          "description": "Recommended lints for Flutter apps, packages, and plugins to encourage good coding practices.",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_lints",
+          "issue_tracker": "https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+flutter_lints%22",
+          "version": "6.0.0",
+          "environment": {
+            "sdk": "^3.8.0"
+          },
+          "dependencies": {
+            "lints": "^6.0.0"
+          },
+          "topics": [
+            "lints"
+          ]
+        },
+        "archive_url": "https://pub.dev/api/archives/flutter_lints-6.0.0.tar.gz",
+        "archive_sha256": "3105dc8492f6183fb076ccf1f351ac3d60564bff92e20bfc4af9cc1651f4e7e1",
+        "published": "2025-05-27T13:59:16.618213Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/flutter_lints/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "flutter.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/flutter_lints-6.0.0.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "3105dc8492f6183fb076ccf1f351ac3d60564bff92e20bfc4af9cc1651f4e7e1",
+        "bytes": 4980,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 11
+      }
+    },
+    {
+      "name": "leak_tracker",
+      "version": "11.0.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker/versions/11.0.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "11.0.2",
+        "pubspec": {
+          "name": "leak_tracker",
+          "version": "11.0.2",
+          "description": "A framework for memory leak tracking for Dart and Flutter applications.",
+          "repository": "https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker",
+          "environment": {
+            "sdk": "^3.2.0"
+          },
+          "dependencies": {
+            "clock": "^1.1.1",
+            "collection": "^1.15.0",
+            "meta": "^1.8.0",
+            "path": "^1.8.3",
+            "vm_service": ">=11.10.0 <16.0.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.1.0",
+            "layerlens": "^1.0.16",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/leak_tracker-11.0.2.tar.gz",
+        "archive_sha256": "33e2e26bdd85a0112ec15400c8cbffea70d0f9c3407491f672a2fad47915e2de",
+        "published": "2025-09-10T22:43:39.810799Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/leak_tracker-11.0.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "33e2e26bdd85a0112ec15400c8cbffea70d0f9c3407491f672a2fad47915e2de",
+        "bytes": 34448,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "test/test_infra/utils.dart"
+        ],
+        "regular_files": 55
+      }
+    },
+    {
+      "name": "leak_tracker_flutter_testing",
+      "version": "3.0.10",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_flutter_testing/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_flutter_testing/versions/3.0.10",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "3.0.10",
+        "pubspec": {
+          "name": "leak_tracker_flutter_testing",
+          "version": "3.0.10",
+          "description": "An internal package to test leak tracking with Flutter.",
+          "repository": "https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_flutter_testing",
+          "environment": {
+            "sdk": "^3.2.0",
+            "flutter": ">=3.18.0-18.0.pre.54"
+          },
+          "dependencies": {
+            "flutter": {
+              "sdk": "flutter"
+            },
+            "leak_tracker": ">=11.0.1 <12.0.0",
+            "leak_tracker_testing": ">=3.0.1 <4.0.0",
+            "matcher": "^0.12.16",
+            "meta": "^1.8.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.1.0",
+            "layerlens": "^1.0.16",
+            "test": "^1.25.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/leak_tracker_flutter_testing-3.0.10.tar.gz",
+        "archive_sha256": "1dbc140bb5a23c75ea9c4811222756104fbcd1a27173f0c34ca01e16bea473c1",
+        "published": "2025-04-21T20:28:24.122862Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_flutter_testing/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "flutter.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/leak_tracker_flutter_testing-3.0.10.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "1dbc140bb5a23c75ea9c4811222756104fbcd1a27173f0c34ca01e16bea473c1",
+        "bytes": 10363,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 25
+      }
+    },
+    {
+      "name": "leak_tracker_testing",
+      "version": "3.0.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_testing/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_testing/versions/3.0.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "3.0.2",
+        "pubspec": {
+          "name": "leak_tracker_testing",
+          "version": "3.0.2",
+          "description": "Leak tracking code intended for usage in tests.",
+          "repository": "https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_testing",
+          "environment": {
+            "sdk": "^3.2.0"
+          },
+          "dependencies": {
+            "leak_tracker": ">=9.0.0 <12.0.0",
+            "matcher": "^0.12.16",
+            "meta": "^1.11.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.1.0",
+            "layerlens": "^1.0.16",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/leak_tracker_testing-3.0.2.tar.gz",
+        "archive_sha256": "8d5a2d49f4a66b49744b23b018848400d23e54caf9463f4eb20df3eb8acb2eb1",
+        "published": "2025-04-21T20:28:12.802586Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/leak_tracker_testing/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/leak_tracker_testing-3.0.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "8d5a2d49f4a66b49744b23b018848400d23e54caf9463f4eb20df3eb8acb2eb1",
+        "bytes": 7535,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 13
+      }
+    },
+    {
+      "name": "lints",
+      "version": "6.1.0",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/lints/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/lints/versions/6.1.0",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "6.1.0",
+        "pubspec": {
+          "name": "lints",
+          "version": "6.1.0",
+          "description": "Official Dart lint rules. Defines the 'core' and 'recommended' set of lints suggested by the Dart team.\n",
+          "repository": "https://github.com/dart-lang/core/tree/main/pkgs/lints",
+          "issue_tracker": "https://github.com/dart-lang/core/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Alints",
+          "topics": [
+            "analysis",
+            "lints"
+          ],
+          "environment": {
+            "sdk": "^3.8.0"
+          },
+          "dev_dependencies": {
+            "http": "^1.0.0",
+            "path": "^1.8.0",
+            "yaml": "^3.1.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/lints-6.1.0.tar.gz",
+        "archive_sha256": "12f842a479589fea194fe5c5a3095abc7be0c1f2ddfa9a0e76aed1dbd26a87df",
+        "published": "2026-01-30T21:32:30.985377Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/lints/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/lints-6.1.0.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "12f842a479589fea194fe5c5a3095abc7be0c1f2ddfa9a0e76aed1dbd26a87df",
+        "bytes": 18120,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 15
+      }
+    },
+    {
+      "name": "matcher",
+      "version": "0.12.20",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/matcher/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/matcher/versions/0.12.20",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "0.12.20",
+        "pubspec": {
+          "name": "matcher",
+          "version": "0.12.20",
+          "description": "Support for specifying test expectations via an extensible Matcher class. Also includes a number of built-in Matcher implementations for common cases.",
+          "repository": "https://github.com/dart-lang/test/tree/master/pkgs/matcher",
+          "issue_tracker": "https://github.com/dart-lang/test/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Amatcher",
+          "environment": {
+            "sdk": "^3.10.0"
+          },
+          "dependencies": {
+            "async": "^2.10.0",
+            "meta": "^1.8.0",
+            "stack_trace": "^1.10.0",
+            "term_glyph": "^1.2.0",
+            "test_api": ">=0.5.0 <0.8.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.2.0",
+            "fake_async": "^1.3.0",
+            "test": "^1.23.0"
+          },
+          "dependency_overrides": {
+            "test": "1.25.0",
+            "test_api": "0.7.3"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/matcher-0.12.20.tar.gz",
+        "archive_sha256": "31bd099b47c10cd1aeb55146a2d46ce0277630ecef3f7dae54ad7873f36696cd",
+        "published": "2026-04-27T20:39:05.888392Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/matcher/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/matcher-0.12.20.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "31bd099b47c10cd1aeb55146a2d46ce0277630ecef3f7dae54ad7873f36696cd",
+        "bytes": 59725,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 61
+      }
+    },
+    {
+      "name": "material_color_utilities",
+      "version": "0.13.0",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/material_color_utilities/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/material_color_utilities/versions/0.13.0",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "0.13.0",
+        "pubspec": {
+          "name": "material_color_utilities",
+          "description": "Algorithms and utilities that power the Material Design 3 color system, including choosing theme colors from images and creating tones of colors; all in a new color space.",
+          "version": "0.13.0",
+          "repository": "https://github.com/material-foundation/material-color-utilities/tree/main/dart",
+          "issue_tracker": "https://github.com/material-foundation/material-color-utilities/issues",
+          "screenshots": [
+            {
+              "description": "App showing the Material You color system.",
+              "path": "screenshots/material_you_1.png"
+            },
+            {
+              "description": "App showing the Material You color system.",
+              "path": "screenshots/material_you_2.png"
+            },
+            {
+              "description": "App showing the Material You color system.",
+              "path": "screenshots/material_you_3.png"
+            },
+            {
+              "description": "App showing the Material You color system.",
+              "path": "screenshots/material_you_4.png"
+            }
+          ],
+          "environment": {
+            "sdk": "^3.5.0"
+          },
+          "dependencies": {
+            "collection": "^1.15.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "matcher": "^0.12.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/material_color_utilities-0.13.0.tar.gz",
+        "archive_sha256": "9c337007e82b1889149c82ed242ed1cb24a66044e30979c44912381e9be4c48b",
+        "published": "2025-06-04T16:40:01.638488Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/material_color_utilities/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "material.io"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/material_color_utilities-0.13.0.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "9c337007e82b1889149c82ed242ed1cb24a66044e30979c44912381e9be4c48b",
+        "bytes": 2115434,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 68
+      }
+    },
+    {
+      "name": "meta",
+      "version": "1.18.3",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/meta/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/meta/versions/1.18.3",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.18.3",
+        "pubspec": {
+          "name": "meta",
+          "version": "1.18.3",
+          "description": "Annotations used to express developer intentions that can't otherwise be deduced by statically analyzing source code.",
+          "repository": "https://github.com/dart-lang/sdk/tree/main/pkg/meta",
+          "topics": [
+            "static-analysis"
+          ],
+          "environment": {
+            "sdk": "^3.5.0"
+          },
+          "resolution": "workspace",
+          "dev_dependencies": {
+            "lints": "any"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/meta-1.18.3.tar.gz",
+        "archive_sha256": "c82594181e3312f3d0695fc95aaaf7758d75b8d4ae2bbecf223b9fd5109a059d",
+        "published": "2026-06-04T18:01:53.652200Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/meta/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/meta-1.18.3.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "c82594181e3312f3d0695fc95aaaf7758d75b8d4ae2bbecf223b9fd5109a059d",
+        "bytes": 16874,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 9
+      }
+    },
+    {
+      "name": "path",
+      "version": "1.9.1",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/path/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/path/versions/1.9.1",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.9.1",
+        "pubspec": {
+          "name": "path",
+          "version": "1.9.1",
+          "description": "A string-based path manipulation library. All of the path operations you know and love, with solid support for Windows, POSIX (Linux and Mac OS X), and the web.",
+          "repository": "https://github.com/dart-lang/core/tree/main/pkgs/path",
+          "topics": [
+            "file-system"
+          ],
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/path-1.9.1.tar.gz",
+        "archive_sha256": "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5",
+        "published": "2024-10-17T08:37:58.135322Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/path/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/path-1.9.1.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5",
+        "bytes": 45282,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 30
+      }
+    },
+    {
+      "name": "source_span",
+      "version": "1.10.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/source_span/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/source_span/versions/1.10.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.10.2",
+        "pubspec": {
+          "name": "source_span",
+          "version": "1.10.2",
+          "description": "Provides a standard representation for source code locations and spans.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/source_span",
+          "issue_tracker": "https://github.com/dart-lang/tools/labels/package%3Asource_span",
+          "environment": {
+            "sdk": "^3.1.0"
+          },
+          "dependencies": {
+            "collection": "^1.15.0",
+            "path": "^1.8.0",
+            "term_glyph": "^1.2.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.0"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/source_span-1.10.2.tar.gz",
+        "archive_sha256": "56a02f1f4cd1a2d96303c0144c93bd6d909eea6bee6bf5a0e0b685edbd4c47ab",
+        "published": "2026-02-05T09:07:00.222021Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/source_span/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/source_span-1.10.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "56a02f1f4cd1a2d96303c0144c93bd6d909eea6bee6bf5a0e0b685edbd4c47ab",
+        "bytes": 29648,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 25
+      }
+    },
+    {
+      "name": "stack_trace",
+      "version": "1.12.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/stack_trace/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/stack_trace/versions/1.12.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.12.2",
+        "pubspec": {
+          "name": "stack_trace",
+          "version": "1.12.2",
+          "description": "A package for manipulating stack traces and printing them readably.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/stack_trace",
+          "issue_tracker": "https://github.com/dart-lang/tools/labels/package%3Astack_trace",
+          "environment": {
+            "sdk": "^3.4.0"
+          },
+          "dependencies": {
+            "path": "^1.8.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/stack_trace-1.12.2.tar.gz",
+        "archive_sha256": "277654b3034d17ac6f9f1cb5595db011b1d5d41e8806866db28e0abaa101c490",
+        "published": "2026-08-28T20:42:47.771496Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/stack_trace/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/stack_trace-1.12.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "277654b3034d17ac6f9f1cb5595db011b1d5d41e8806866db28e0abaa101c490",
+        "bytes": 34019,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 24
+      }
+    },
+    {
+      "name": "stream_channel",
+      "version": "2.1.4",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/stream_channel/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/stream_channel/versions/2.1.4",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "2.1.4",
+        "pubspec": {
+          "name": "stream_channel",
+          "version": "2.1.4",
+          "description": "An abstraction for two-way communication channels based on the Dart Stream class.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/stream_channel",
+          "environment": {
+            "sdk": "^3.3.0"
+          },
+          "dependencies": {
+            "async": "^2.5.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/stream_channel-2.1.4.tar.gz",
+        "archive_sha256": "969e04c80b8bcdf826f8f16579c7b14d780458bd97f56d107d3950fdbeef059d",
+        "published": "2025-01-07T16:38:32.361753Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/stream_channel/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/stream_channel-2.1.4.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "969e04c80b8bcdf826f8f16579c7b14d780458bd97f56d107d3950fdbeef059d",
+        "bytes": 22854,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 28
+      }
+    },
+    {
+      "name": "string_scanner",
+      "version": "1.4.1",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/string_scanner/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/string_scanner/versions/1.4.1",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.4.1",
+        "pubspec": {
+          "name": "string_scanner",
+          "version": "1.4.1",
+          "description": "A class for parsing strings using a sequence of patterns.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/string_scanner",
+          "environment": {
+            "sdk": "^3.1.0"
+          },
+          "dependencies": {
+            "source_span": "^1.8.0"
+          },
+          "dev_dependencies": {
+            "dart_flutter_team_lints": "^3.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/string_scanner-1.4.1.tar.gz",
+        "archive_sha256": "921cd31725b72fe181906c6a94d987c78e3b98c2e205b397ea399d4054872b43",
+        "published": "2024-12-17T10:00:43.322120Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/string_scanner/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/string_scanner-1.4.1.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "921cd31725b72fe181906c6a94d987c78e3b98c2e205b397ea399d4054872b43",
+        "bytes": 16495,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 20
+      }
+    },
+    {
+      "name": "term_glyph",
+      "version": "1.2.2",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/term_glyph/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/term_glyph/versions/1.2.2",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "1.2.2",
+        "pubspec": {
+          "name": "term_glyph",
+          "version": "1.2.2",
+          "description": "Useful Unicode glyphs and ASCII substitutes.",
+          "repository": "https://github.com/dart-lang/tools/tree/main/pkgs/term_glyph",
+          "environment": {
+            "sdk": "^3.1.0"
+          },
+          "dev_dependencies": {
+            "csv": "^6.0.0",
+            "dart_flutter_team_lints": "^3.0.0",
+            "dart_style": "^2.0.0",
+            "test": "^1.16.6"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/term_glyph-1.2.2.tar.gz",
+        "archive_sha256": "7f554798625ea768a7518313e58f83891c7f5024f88e46e7182a4558850a4b8e",
+        "published": "2024-12-17T09:33:15.487660Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/term_glyph/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/term_glyph-1.2.2.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "7f554798625ea768a7518313e58f83891c7f5024f88e46e7182a4558850a4b8e",
+        "bytes": 9024,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "tool/generate.dart"
+        ],
+        "regular_files": 14
+      }
+    },
+    {
+      "name": "test_api",
+      "version": "0.7.12",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/test_api/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/test_api/versions/0.7.12",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "0.7.12",
+        "pubspec": {
+          "name": "test_api",
+          "version": "0.7.12",
+          "description": "The user facing API for structuring Dart tests and checking expectations.",
+          "repository": "https://github.com/dart-lang/test/tree/master/pkgs/test_api",
+          "issue_tracker": "https://github.com/dart-lang/test/issues?q=is%3Aissue+is%3Aopen+label%3Apackage%3Atest",
+          "resolution": "workspace",
+          "environment": {
+            "sdk": "^3.10.0"
+          },
+          "dependencies": {
+            "async": "^2.5.0",
+            "boolean_selector": "^2.1.0",
+            "collection": "^1.15.0",
+            "meta": "^1.16.0",
+            "source_span": "^1.8.0",
+            "stack_trace": "^1.10.0",
+            "stream_channel": "^2.1.0",
+            "string_scanner": "^1.1.0",
+            "term_glyph": "^1.2.0"
+          },
+          "dev_dependencies": {
+            "analyzer": ">=8.0.0 <14.0.0",
+            "fake_async": "^1.2.0",
+            "glob": "^2.0.0",
+            "graphs": "^2.0.0",
+            "path": "^1.8.0",
+            "test": "any",
+            "test_core": "any"
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/test_api-0.7.12.tar.gz",
+        "archive_sha256": "2a122cbe059f8b610d3a5415f42e255b6c17b1f21eee1d960f31080237fb4f11",
+        "published": "2026-04-27T20:39:09.666469Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/test_api/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/test_api-0.7.12.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "2a122cbe059f8b610d3a5415f42e255b6c17b1f21eee1d960f31080237fb4f11",
+        "bytes": 60812,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 60
+      }
+    },
+    {
+      "name": "vector_math",
+      "version": "2.4.0",
+      "scope": "runtime",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/vector_math/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/vector_math/versions/2.4.0",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "2.4.0",
+        "pubspec": {
+          "name": "vector_math",
+          "description": "A vector math library for 2D and 3D applications, supporting 2D, 3D, and 4D matrices.",
+          "repository": "https://github.com/flutter/core-packages/tree/main/packages/vector_math",
+          "issue_tracker": "https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+vector_math%22",
+          "version": "2.4.0",
+          "environment": {
+            "sdk": "^3.10.0"
+          },
+          "dev_dependencies": {
+            "benchmark_harness": "^2.0.0",
+            "build_runner": "^2.5.0",
+            "build_test": "^3.0.0",
+            "build_web_compilers": "^4.1.1",
+            "path": "^1.9.0",
+            "test": "^1.25.9"
+          },
+          "topics": [
+            "math"
+          ]
+        },
+        "archive_url": "https://pub.dev/api/archives/vector_math-2.4.0.tar.gz",
+        "archive_sha256": "1d774bbdf6b72a0b12122fc1560c9c2d2a67db5a4a4cc2bd8a5c990ab20e3188",
+        "published": "2026-06-03T20:29:49.519513Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/vector_math/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "flutter.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/vector_math-2.4.0.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "1d774bbdf6b72a0b12122fc1560c9c2d2a67db5a4a4cc2bd8a5c990ab20e3188",
+        "bytes": 177124,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [
+          "bin/mesh_generator.dart"
+        ],
+        "manifest_hook_fields": [],
+        "code_signal_files": [],
+        "regular_files": 110
+      }
+    },
+    {
+      "name": "vm_service",
+      "version": "15.4.0",
+      "scope": "development",
+      "advisories_request": {
+        "url": "https://pub.dev/api/packages/vm_service/advisories",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "advisories": {
+        "advisories": [],
+        "advisoriesUpdated": "1970-01-01T00:00:00.000"
+      },
+      "metadata_request": {
+        "url": "https://pub.dev/api/packages/vm_service/versions/15.4.0",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "metadata": {
+        "version": "15.4.0",
+        "pubspec": {
+          "name": "vm_service",
+          "version": "15.4.0",
+          "description": "A library to communicate with a service implementing the Dart VM service protocol.",
+          "repository": "https://github.com/dart-lang/sdk/tree/main/pkg/vm_service",
+          "environment": {
+            "sdk": "^3.5.0"
+          },
+          "resolution": "workspace",
+          "dev_dependencies": {
+            "async": "any",
+            "collection": "any",
+            "lints": "any",
+            "logging": "any",
+            "markdown": "any",
+            "path": "any",
+            "pub_semver": "any",
+            "stack_trace": "any",
+            "test_package": "any",
+            "test": "any",
+            "vm_service_protos": "any"
+          },
+          "dependency_overrides": {
+            "test_package": {
+              "path": "test/test_package"
+            }
+          }
+        },
+        "archive_url": "https://pub.dev/api/archives/vm_service-15.4.0.tar.gz",
+        "archive_sha256": "89b11d62e1040ee681af3b4f1c97a803ecbf010c6e8b9c5896ee5b08c3bf7b78",
+        "published": "2026-10-15T17:00:24.557960Z"
+      },
+      "publisher_request": {
+        "url": "https://pub.dev/api/packages/vm_service/publisher",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "publisher": {
+        "publisherId": "tools.dart.dev"
+      },
+      "archive_request": {
+        "url": "https://pub.dev/api/archives/vm_service-15.4.0.tar.gz",
+        "http_status": "200",
+        "exit_code": 0,
+        "error": ""
+      },
+      "archive_review": {
+        "sha256": "89b11d62e1040ee681af3b4f1c97a803ecbf010c6e8b9c5896ee5b08c3bf7b78",
+        "bytes": 310877,
+        "matches_lock": true,
+        "matches_registry": true,
+        "cache_mismatches": [],
+        "special_entries": [],
+        "execution_entries": [],
+        "manifest_hook_fields": [],
+        "code_signal_files": [
+          "test/resume_shutdown_race_test.dart",
+          "test/http_profile_incomplete_request_integration_lib.dart",
+          "test/run_all_tests.dart",
+          "test/common/test_helper.dart",
+          "test/common/utils.dart",
+          "test/verify_http_timeline_lib.dart",
+          "test/pause_on_unhandled_async_exceptions7_lib.dart",
+          "test/break_on_unhandled_exception_lib.dart",
+          "test/external_compilation_service_test.dart",
+          "test/http_invocations/http_request_helpers.dart",
+          "test/http_invocations/http_security_test.dart",
+          "test/get_http_profile_lib.dart",
+          "test/private_rpcs/dev_fs_http_put_test.dart",
+          "test/private_rpcs/dev_fs_uri_test.dart",
+          "test/process_service_lib.dart",
+          "test/sigquit_starts_service_test.dart",
+          "example/vm_service_tester.dart",
+          "tool/generate.dart"
+        ],
+        "regular_files": 810
+      }
+    }
+  ]
+}

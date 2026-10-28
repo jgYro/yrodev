@@ -1,0 +1,11 @@
+{
+  "name": "Yro LLC",
+  "short_name": "Yro",
+  "start_url": ".",
+  "display": "browser",
+  "background_color": "#081216",
+  "theme_color": "#081216",
+  "description": "Software, cybersecurity, applied AI, and creative media for people and organizations.",
+  "prefer_related_applications": false,
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

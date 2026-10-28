@@ -1,0 +1,50 @@
+{
+  "tested_at_utc": "2026-10-28T05:01:57.526Z",
+  "browser_version": "156.0.8078.48",
+  "tool": "Existing Playwright MCP server",
+  "origin": "https://yro.audit.invalid",
+  "production_host_tested": false,
+  "method": "Isolated browser context; local build/web files fulfilled through Playwright routes. This file transcribes the returned observations; browser_review.js reproduces the checks.",
+  "baseline": {
+    "chapter_navigation": ["Who We Are", "What We Do", "What We’ve Done", "Why We Do It"],
+    "requests": ["/", "/external_links.js", "/flutter_bootstrap.js", "/canvaskit/chromium/canvaskit.wasm", "/canvaskit/chromium/canvaskit.js", "/main.dart.js", "/assets/FontManifest.json", "/favicon.svg", "/assets/fonts/MaterialIcons-Regular.otf", "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf", "/assets/fonts/fallback/Roboto-Regular.ttf", "/assets/AssetManifest.bin.json", "/assets/assets/previews/tunings.png"],
+    "all_requests_same_origin": true,
+    "all_request_methods": ["GET"],
+    "cookies": "",
+    "local_storage_keys": [],
+    "session_storage_keys": [],
+    "indexed_db_databases": [],
+    "cache_storage_keys": [],
+    "service_worker_registrations": [],
+    "form_count": 0,
+    "page_errors": [],
+    "failed_requests": [],
+    "anchors": [
+      {"href":"https://tunings.io/","target":"_blank","rel":"noopener noreferrer","label":"Open tunings.io in a new tab"},
+      {"href":"https://tunings.io/","target":"_blank","rel":"noopener noreferrer","label":"Tunings website preview. Open tunings.io in a new tab"}
+    ]
+  },
+  "query_and_fragment": {"marker_executed":false,"marker_rendered_in_dom":false,"title":"Yro LLC | Cyber, R&D & AI","coverage":"One benign HTML marker in query and fragment, plus a javascript: navigation marker in a URL parameter. This is a bounded negative check, not exhaustive fuzzing."},
+  "external_links": [
+    {"input":"mouse","destination":"https://tunings.io/","opener_is_null":true,"parent_still_on_site":true,"referer":null},
+    {"input":"keyboard_enter","destination":"https://tunings.io/","opener_is_null":true,"parent_still_on_site":true,"referer":null}
+  ],
+  "external_destination_intercepted": true,
+  "without_frame_header": {"app_frame_loaded":true},
+  "candidate_headers": {
+    "headers": {
+      "Content-Security-Policy":"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'",
+      "X-Content-Type-Options":"nosniff",
+      "Referrer-Policy":"no-referrer",
+      "X-Frame-Options":"DENY",
+      "Permissions-Policy":"camera=(), microphone=(), geolocation=()"
+    },
+    "app_rendered":true,
+    "console_errors":[],
+    "page_errors":[]
+  },
+  "with_frame_header": {
+    "app_frame_loaded":false,
+    "console_errors":["Framing 'https://yro.audit.invalid/' violates the following Content Security Policy directive: \"frame-ancestors 'none'\". The request has been blocked."]
+  }
+}
