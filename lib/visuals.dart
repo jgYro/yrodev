@@ -2,8 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-const _trace = Color(0xFF72B9B1);
-const _metal = Color(0xFFB5B491);
+import 'site_theme.dart';
+
+const _trace = purple;
+const _metal = ink;
 
 /// Original circuit traces with a quiet, compass-like geometric construction.
 class CircuitPainter extends CustomPainter {
@@ -37,22 +39,23 @@ class CircuitPainter extends CustomPainter {
       }
       canvas.drawPath(
         path,
-        _stroke(_trace.withValues(alpha: i.isEven ? 0.45 : 0.22)),
+        _stroke(
+          (i.isEven ? _metal : _trace).withValues(alpha: i.isEven ? 0.42 : 0.6),
+        ),
       );
-      canvas.drawCircle(
-        points.first,
-        2,
-        Paint()..color = _trace.withValues(alpha: 0.6),
+      canvas.drawRect(
+        Rect.fromCenter(center: points.first, width: 4, height: 4),
+        Paint()..color = bloodRedEdge,
       );
     }
 
-    canvas.drawCircle(center, 182, _stroke(_metal.withValues(alpha: 0.26)));
-    canvas.drawCircle(center, 174, _stroke(_trace.withValues(alpha: 0.45)));
+    canvas.drawCircle(center, 182, _stroke(bloodRedEdge));
+    canvas.drawCircle(center, 174, _stroke(_metal.withValues(alpha: 0.48)));
     canvas.drawCircle(center, 150, _stroke(_trace.withValues(alpha: 0.18)));
 
     // Six intersecting circles reference sacred geometry without adding symbols.
     const radius = 86.0;
-    final geometry = _stroke(_trace.withValues(alpha: 0.29));
+    final geometry = _stroke(_trace.withValues(alpha: 0.42));
     canvas.drawCircle(center, radius, geometry);
     final hexagon = Path();
     for (var i = 0; i < 6; i++) {
@@ -78,9 +81,9 @@ class CircuitPainter extends CustomPainter {
         _stroke(_metal.withValues(alpha: i % 4 == 0 ? 0.6 : 0.28)),
       );
     }
-    canvas.drawCircle(center, 66, Paint()..color = const Color(0xFF0B191E));
-    canvas.drawCircle(center, 66, _stroke(_trace.withValues(alpha: 0.55)));
-    canvas.drawCircle(center, 61, _stroke(_metal.withValues(alpha: 0.2)));
+    canvas.drawCircle(center, 66, Paint()..color = bloodRed);
+    canvas.drawCircle(center, 66, _stroke(bloodRedEdge));
+    canvas.drawCircle(center, 61, _stroke(_metal.withValues(alpha: 0.22)));
 
     // The split Y retains the angled letterform of the business card.
     final mark = Path()
@@ -96,7 +99,7 @@ class CircuitPainter extends CustomPainter {
       ..lineTo(242, 265)
       ..lineTo(242, 225)
       ..close();
-    canvas.drawPath(mark, Paint()..color = const Color(0xFF8BC8BA));
+    canvas.drawPath(mark, Paint()..color = ink);
     canvas.restore();
   }
 
@@ -116,7 +119,7 @@ class MediaPainter extends CustomPainter {
       canvas.drawCircle(
         center,
         radius + i * 12,
-        _stroke(_trace.withValues(alpha: 0.16)),
+        _stroke((i == 0 ? bloodRedEdge : _trace).withValues(alpha: 0.45)),
       );
     }
     for (var i = 0; i < 6; i++) {
@@ -155,7 +158,7 @@ class MediaPainter extends CustomPainter {
 Paint _stroke(Color color) => Paint()
   ..color = color
   ..style = PaintingStyle.stroke
-  ..strokeWidth = 0.8;
+  ..strokeWidth = 1;
 
 /// Layered ridge lines echo the Appalachian landscape without a stock image.
 class AppalachiaPainter extends CustomPainter {
@@ -167,7 +170,8 @@ class AppalachiaPainter extends CustomPainter {
     canvas.scale(size.width / 500, size.height / 330);
     canvas.clipRect(const Rect.fromLTWH(0, 0, 500, 330));
     const moon = Offset(354, 75);
-    canvas.drawCircle(moon, 28, _stroke(_metal.withValues(alpha: 0.5)));
+    canvas.drawCircle(moon, 28, Paint()..color = bloodRed);
+    canvas.drawCircle(moon, 28, _stroke(bloodRedEdge));
     canvas.drawCircle(moon, 36, _stroke(_metal.withValues(alpha: 0.12)));
     for (var i = 0; i < 7; i++) {
       final offset = i * 22.0;

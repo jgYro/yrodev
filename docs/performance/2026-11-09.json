@@ -1,0 +1,935 @@
+{
+  "checkedAt": "2026-11-09",
+  "site": "https://yro.dev/",
+  "analytics": {
+    "property": "561979164",
+    "period": {
+      "start": "2026-11-02",
+      "end": "2026-11-08",
+      "basis": "GA4 Last 7 days, excluding today"
+    },
+    "activeUsers": 2,
+    "totalUsers": 2,
+    "sessions": 2,
+    "views": 2,
+    "engagedSessions": 0,
+    "engagementRate": 0,
+    "averageEngagementTimePerSessionSeconds": 0,
+    "eventCount": 6,
+    "eventCounts": {
+      "first_visit": 2,
+      "page_view": 2,
+      "session_start": 2,
+      "contact_click": 0,
+      "chapter_view": 0,
+      "chapter_navigation": 0,
+      "portfolio_click": 0
+    },
+    "channels": {
+      "Direct": 2
+    },
+    "countries": {
+      "United States": 2
+    },
+    "keyEvents": 0,
+    "reportingConfiguration": {
+      "keyEventNames": [
+        "purchase"
+      ],
+      "contactClickIsKeyEvent": false,
+      "customDimensions": []
+    },
+    "interpretation": "Insufficient traffic to judge business performance. Counts match the two live setup-verification page visits recorded on November 2; they may be entirely test traffic, but visitor identity cannot be established from these aggregate reports.",
+    "evidence": {
+      "traffic": {
+        "url": "https://analytics.google.com/analytics/web/#/a334613485p561979164/reports/explorer?params=_r.explorerCard..selmet%3D%5B%22sessions%22%5D%26_r.explorerCard..seldim%3D%5B%22sessionPrimaryChannelGroup%22%5D%26_u.dateOption%3Dlast7Days%26_u.comparisonOption%3Ddisabled&r=lifecycle-traffic-acquisition-v2",
+        "date": "Last 7 days\nNov 2 - Nov 8, 2026",
+        "table": "- grid \"Report data.\":\n  - rowgroup:\n    - row \"selection column Checkbox for deselecting all rows Index Session primary channel group (Default Channel Group) Sessions Engaged sessions Engagement rate Average engagement time per session Events per session Event count All events Key events All events Session key event rate All events Total revenue\":\n      - columnheader \"selection column Checkbox for deselecting all rows\":\n        - text: selection column\n        - checkbox \"Checkbox for deselecting all rows\" [checked=mixed]\n      - columnheader \"Index\"\n      - columnheader \"Session primary channel group (Default Channel Group)\":\n        - button \"Session primary channel group (Default Channel Group) open dimensions picker\":\n          - button \"Session primary channel group (Default Channel Group)\"\n          - button \"open dimensions picker\"\n      - columnheader \"Sessions\":\n        - button \"Sessions\":\n          - button \"Sessions\"\n      - columnheader \"Engaged sessions\":\n        - button \"Engaged sessions\":\n          - button \"Engaged sessions\"\n      - columnheader \"Engagement rate\":\n        - button \"Engagement rate\":\n          - button \"Engagement rate\"\n      - columnheader \"Average engagement time per session\":\n        - button \"Average engagement time per session\":\n          - button \"Average engagement time per session\"\n      - columnheader \"Events per session\":\n        - button \"Events per session\":\n          - button \"Events per session\"\n      - columnheader \"Event count All events\":\n        - button \"Event count All events\":\n          - button \"Event count\"\n          - button \"All events\"\n      - columnheader \"Key events All events\":\n        - button \"Key events All events\":\n          - button \"Key events\"\n          - button \"All events\"\n      - columnheader \"Session key event rate All events\":\n        - button \"Session key event rate All events\":\n          - button \"Session key event rate\"\n          - button \"All events\"\n      - columnheader \"Total revenue\":\n        - button \"Total revenue\":\n          - button \"Total revenue\"\n    - row \"Checkbox for total row Empty Summary Totals cell for Empty Summary Totals cell for Index column Total 2 100% of total Empty Summary Totals cell for Engaged sessions column 0 Empty Summary Totals cell for Engagement rate column 0% Empty Summary Totals cell for Average engagement time per session column 0s 3.00 Avg 0% 6 100% of total Empty Summary Totals cell for Key events column 0.00 Empty Summary Totals cell for Session key event rate column 0% Empty Summary Totals cell for Total revenue column $0.00\":\n      - columnheader \"Checkbox for total row Empty Summary Totals cell for\":\n        - checkbox \"Checkbox for total row\" [checked]\n        - text: Empty Summary Totals cell for\n      - columnheader \"Empty Summary Totals cell for Index column\"\n      - columnheader \"Total\"\n      - columnheader \"2 100% of total\"\n      - columnheader \"Empty Summary Totals cell for Engaged sessions column 0\"\n      - columnheader \"Empty Summary Totals cell for Engagement rate column 0%\"\n      - columnheader \"Empty Summary Totals cell for Average engagement time per session column 0s\"\n      - columnheader \"3.00 Avg 0%\"\n      - columnheader \"6 100% of total\"\n      - columnheader \"Empty Summary Totals cell for Key events column 0.00\"\n      - columnheader \"Empty Summary Totals cell for Session key event rate column 0%\"\n      - columnheader \"Empty Summary Totals cell for Total revenue column $0.00\"\n  - rowgroup:\n    - row \"Checkbox for selecting row 1 1 Direct 2 (100%) 0 (–) 0% 0s 3.00 6 (100%) 0.00 (–) 0% $0.00 (–)\":\n      - gridcell \"Checkbox for selecting row 1\":\n        - checkbox \"Checkbox for selecting row 1\" [checked]\n      - gridcell \"1\"\n      - gridcell \"Direct\"\n      - gridcell \"2 (100%)\"\n      - gridcell \"0 (–)\"\n      - gridcell \"0%\"\n      - gridcell \"0s\"\n      - gridcell \"3.00\"\n      - gridcell \"6 (100%)\"\n      - gridcell \"0.00 (–)\"\n      - gridcell \"0%\"\n      - gridcell \"$0.00 (–)\""
+      },
+      "events": {
+        "url": "https://analytics.google.com/analytics/web/#/a334613485p561979164/reports/explorer?params=_u.dateOption%3Dlast7Days%26_u.comparisonOption%3Ddisabled%26_u..nav%3Dmaui&r=top-events&ruid=top-events,business-objectives,examine-user-behavior&collectionId=business-objectives",
+        "snapshot": "- main:\n  - button \"All Users\"\n  - button \"Add comparison\"\n  - combobox \"Open date range picker\": Last 7 days Nov 2 - Nov 8, 2026\n  - separator\n  - 'heading \"Events: Event name\" [level=1]':\n    - 'button \"Events: Event name\"'\n  - button \"This report uses 100% of available data. Click to view more information.\"\n  - button \"Add filter\"\n  - button \"View annotations\"\n  - button \"Edit comparisons\"\n  - button \"Open this report as an exploration\"\n  - button \"Share this report\"\n  - button \"Insights\"\n  - button \"Customize report\"\n  - button \"Ask Advisor\"\n  - heading \"Event count by Event name over time\" [level=2]\n  - combobox \"Date granularity selector\": Day\n  - img:\n    - text: 02Nov 03 04 05 06 07 08 0 2 4 6 8\n    - list:\n      - listitem:\n        - button \"Highlight Total line\" [pressed]\n      - listitem:\n        - button \"Highlight first_visit line\" [pressed]\n      - listitem:\n        - button \"Highlight page_view line\" [pressed]\n      - listitem:\n        - button \"Highlight session_start line\" [pressed]\n  - button \"Plot rows\" [disabled]\n  - textbox \"Search\":\n    - /placeholder: Search…\n  - text: \"Rows per page:\"\n  - 'combobox \"Rows per page: 10\"': \"10\"\n  - text: 1-3 of 3\n  - grid \"Report data.\":\n    - rowgroup:\n      - row \"selection column Checkbox for deselecting all rows Index Event name Event count Total users Event count per active user Total revenue Actions\":\n        - columnheader \"selection column Checkbox for deselecting all rows\":\n          - text: selection column\n          - checkbox \"Checkbox for deselecting all rows\" [checked=mixed]\n        - columnheader \"Index\"\n        - columnheader \"Event name\":\n          - button \"Event name open dimensions picker\":\n            - text: Event name\n            - button \"open dimensions picker\"\n        - columnheader \"Event count\":\n          - button \"Event count\":\n            - button \"Event count\"\n        - columnheader \"Total users\":\n          - button \"Total users\":\n            - button \"Total users\"\n        - columnheader \"Event count per active user\":\n          - button \"Event count per active user\":\n            - button \"Event count per active user\"\n        - columnheader \"Total revenue\":\n          - button \"Total revenue\":\n            - button \"Total revenue\"\n        - columnheader \"Actions\"\n      - row \"Checkbox for total row Empty Summary Totals cell for Empty Summary Totals cell for Index column Total 6 100% of total 2 100% of total 3.00 Avg 0% Empty Summary Totals cell for Total revenue column $0.00 Empty Summary Totals cell for Actions column\":\n        - columnheader \"Checkbox for total row Empty Summary Totals cell for\":\n          - checkbox \"Checkbox for total row\" [checked]\n          - text: Empty Summary Totals cell for\n        - columnheader \"Empty Summary Totals cell for Index column\"\n        - columnheader \"Total\"\n        - columnheader \"6 100% of total\"\n        - columnheader \"2 100% of total\"\n        - columnheader \"3.00 Avg 0%\"\n        - columnheader \"Empty Summary Totals cell for Total revenue column $0.00\"\n        - columnheader \"Empty Summary Totals cell for Actions column\"\n    - rowgroup:\n      - row \"Checkbox for selecting row 1 1 first_visit 2 (33.33%) 2 (100%) 1.00 $0.00 (–) Inline action menu\":\n        - gridcell \"Checkbox for selecting row 1\":\n          - checkbox \"Checkbox for selecting row 1\" [checked]\n        - gridcell \"1\"\n        - gridcell \"first_visit\"\n        - gridcell \"2 (33.33%)\"\n        - gridcell \"2 (100%)\"\n        - gridcell \"1.00\"\n        - gridcell \"$0.00 (–)\"\n        - gridcell \"Inline action menu\":\n          - button \"Inline action menu\"\n      - row \"Checkbox for selecting row 2 2 page_view 2 (33.33%) 2 (100%) 1.00 $0.00 (–) Inline action menu\":\n        - gridcell \"Checkbox for selecting row 2\":\n          - checkbox \"Checkbox for selecting row 2\" [checked]\n        - gridcell \"2\"\n        - gridcell \"page_view\"\n        - gridcell \"2 (33.33%)\"\n        - gridcell \"2 (100%)\"\n        - gridcell \"1.00\"\n        - gridcell \"$0.00 (–)\"\n        - gridcell \"Inline action menu\":\n          - button \"Inline action menu\"\n      - row \"Checkbox for selecting row 3 3 session_start 2 (33.33%) 2 (100%) 1.00 $0.00 (–) Inline action menu\":\n        - gridcell \"Checkbox for selecting row 3\":\n          - checkbox \"Checkbox for selecting row 3\" [checked]\n        - gridcell \"3\"\n        - gridcell \"session_start\"\n        - gridcell \"2 (33.33%)\"\n        - gridcell \"2 (100%)\"\n        - gridcell \"1.00\"\n        - gridcell \"$0.00 (–)\"\n        - gridcell \"Inline action menu\":\n          - button \"Inline action menu\"\n  - text: © 2026 Google |\n  - link \"Analytics home\":\n    - /url: https://www.google.com/analytics/?hl=en-US\n  - text: \"|\"\n  - link \"Terms of Service\":\n    - /url: https://www.google.com/analytics/tos.html?hl=en-US\n  - text: \"|\"\n  - link \"Privacy Policy\":\n    - /url: https://www.google.com/policies/privacy/?hl=en-US\n  - text: \"|\"\n  - button \"Send feedback\""
+      },
+      "adminEvents": {
+        "url": "https://analytics.google.com/analytics/web/#/a334613485p561979164/admin/events/hub",
+        "snapshot": "- main:\n  - heading \"Events\" [level=1]\n  - text: Events measure user interactions on your website and app. Key events are the events that are important to your business, such as a purchase or a newsletter signup. All key events and only events from the last 28 days are shown below.\n  - button \"Quota information\"\n  - button \"Navigate to the DebugView page\":\n    - img \"Link to Debug View\"\n  - button \"Create event\"\n  - button \"Attribution settings\"\n  - button \"Custom configurations\"\n  - text: Notification To mark an event as a key event, select the star next to the event name.\n  - button \"Dismiss\"\n  - searchbox \"Type to filter\"\n  - tablist:\n    - tab \"Key events\" [selected]\n    - tab \"Recent events\"\n  - tabpanel \"Key events\"\n  - table \"Events & Key Events table\":\n    - row \"Mark as Key event Event name Streams active in the last 28 days Action menu\":\n      - columnheader \"Mark as Key event\"\n      - columnheader \"Event name\"\n      - columnheader \"Streams active in the last 28 days\"\n      - columnheader \"Action menu\"\n    - row \"toggle key event status purchase No stream data detected Action menu\":\n      - cell \"toggle key event status\":\n        - button \"toggle key event status\" [disabled] [pressed]\n      - cell \"purchase\"\n      - cell \"No stream data detected\":\n        - button \"No stream data detected\"\n      - cell \"Action menu\":\n        - button \"Action menu\"\n  - group:\n    - combobox \"Items per page:\": \"25\"\n    - status: 1 – 1 of 1\n    - button \"First page\" [disabled]\n    - button \"Previous page\" [disabled]\n    - button \"Next page\" [disabled]\n    - button \"Last page\" [disabled]"
+      },
+      "customDimensions": {
+        "url": "https://analytics.google.com/analytics/web/#/a334613485p561979164/admin/customdefinitions/hub",
+        "snapshot": "- main:\n  - heading \"Custom definitions\" [level=1]\n  - button \"Quota information\"\n  - searchbox \"Type to filter\"\n  - button \"Create custom dimension\"\n  - tablist:\n    - tab \"Custom dimensions\" [selected]\n    - tab \"Custom metrics\"\n    - tab \"Calculated metrics\"\n  - tabpanel \"Custom dimensions\"\n  - table \"Custom definitions\":\n    - row \"Dimension name Description Scope User Property/Parameter Last changed Options\":\n      - columnheader \"Dimension name\":\n        - button \"Dimension name\"\n      - columnheader \"Description\":\n        - button \"Description\"\n      - columnheader \"Scope\":\n        - button \"Scope\"\n      - columnheader \"User Property/Parameter\":\n        - button \"User Property/Parameter\"\n      - columnheader \"Last changed\":\n        - button \"Last changed\"\n      - columnheader \"Options\"\n  - group:\n    - combobox \"Items per page:\": \"25\"\n    - status: 0 of 0\n    - button \"First page\" [disabled]\n    - button \"Previous page\" [disabled]\n    - button \"Next page\" [disabled]\n    - button \"Last page\" [disabled]"
+      }
+    }
+  },
+  "loading": {
+    "measuredAt": "2026-11-09T17:45:24.947Z",
+    "browserVersion": "157.0.8103.38",
+    "conditions": {
+      "desktop": "Unthrottled fresh Chromium context; browser cache disabled",
+      "mobile_4g": "390x844 viewport; 150ms network latency; 4Mbps down/1Mbps up; 4x CPU slowdown; fresh context and browser cache disabled"
+    },
+    "runs": [
+      {
+        "mode": "desktop",
+        "run": 1,
+        "status": 200,
+        "ttfbMs": 108.39999997615814,
+        "domContentLoadedMs": 169.5,
+        "loadEventMs": 428.5,
+        "appReadyMs": 820.3999999761581,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 180
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 180
+          }
+        ],
+        "lcp": {
+          "startTime": 180,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 3,
+        "longTaskTotalMs": 681,
+        "longTaskBlockingMs": 531,
+        "transferBytes": 2181258,
+        "encodedBytes": 2177658,
+        "requestCount": 12,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 461.9000000357628,
+            "startMs": 168.89999997615814
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 162.60000002384186,
+            "startMs": 169.39999997615814
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 100.39999997615814,
+            "startMs": 666.8000000119209
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 55.90000003576279,
+            "startMs": 169.0999999642372
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 42.200000047683716,
+            "startMs": 112.09999996423721
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 138,
+            "startMs": 666.5
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 25.30000001192093,
+            "startMs": 111.89999997615814
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 27.600000023841858,
+            "startMs": 666.5999999642372
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 24.80000001192093,
+            "startMs": 112
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 163,
+            "startMs": 430.19999998807907
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 205,
+            "startMs": 426.89999997615814
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      },
+      {
+        "mode": "desktop",
+        "run": 2,
+        "status": 200,
+        "ttfbMs": 73.10000002384186,
+        "domContentLoadedMs": 169.70000004768372,
+        "loadEventMs": 583.4000000357628,
+        "appReadyMs": 656.4000000357628,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 180
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 180
+          }
+        ],
+        "lcp": {
+          "startTime": 180,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 3,
+        "longTaskTotalMs": 309,
+        "longTaskBlockingMs": 159,
+        "transferBytes": 2381365,
+        "encodedBytes": 2377165,
+        "requestCount": 14,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 246.80000001192093,
+            "startMs": 169
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 302.39999997615814,
+            "startMs": 169.60000002384186
+          },
+          {
+            "path": "/assets/assets/previews/tunings.png",
+            "type": "fetch",
+            "transferBytes": 199653,
+            "encodedBytes": 199353,
+            "decodedBytes": 201627,
+            "durationMs": 42.19999998807907,
+            "startMs": 923.8000000119209
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 36.10000002384186,
+            "startMs": 606
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 42,
+            "startMs": 169.20000004768372
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 24.600000023841858,
+            "startMs": 76.60000002384186
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 25.099999964237213,
+            "startMs": 605.7000000476837
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 23.69999998807907,
+            "startMs": 76.40000003576279
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 24.100000023841858,
+            "startMs": 605.8000000119209
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 24.100000023841858,
+            "startMs": 76.60000002384186
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 24.80000001192093,
+            "startMs": 584.1000000238419
+          },
+          {
+            "path": "/assets/AssetManifest.bin.json",
+            "type": "fetch",
+            "transferBytes": 454,
+            "encodedBytes": 154,
+            "decodedBytes": 250,
+            "durationMs": 26.100000023841858,
+            "startMs": 757.1000000238419
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 23.19999998807907,
+            "startMs": 580.4000000357628
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      },
+      {
+        "mode": "desktop",
+        "run": 3,
+        "status": 200,
+        "ttfbMs": 89.30000001192093,
+        "domContentLoadedMs": 174.9000000357628,
+        "loadEventMs": 602.9000000357628,
+        "appReadyMs": 677.1000000238419,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 184
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 184
+          }
+        ],
+        "lcp": {
+          "startTime": 184,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 3,
+        "longTaskTotalMs": 286,
+        "longTaskBlockingMs": 136,
+        "transferBytes": 2381365,
+        "encodedBytes": 2377165,
+        "requestCount": 14,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 220.89999997615814,
+            "startMs": 174.30000001192093
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 311.5,
+            "startMs": 174.69999998807907
+          },
+          {
+            "path": "/assets/assets/previews/tunings.png",
+            "type": "fetch",
+            "transferBytes": 199653,
+            "encodedBytes": 199353,
+            "decodedBytes": 201627,
+            "durationMs": 60.89999997615814,
+            "startMs": 929.4000000357628
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 33.59999996423721,
+            "startMs": 628.9000000357628
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 27.5,
+            "startMs": 174.5
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 28.19999998807907,
+            "startMs": 92.90000003576279
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 24.100000023841858,
+            "startMs": 628.5
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 24.900000035762787,
+            "startMs": 92.69999998807907
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 25.600000023841858,
+            "startMs": 628.6999999880791
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 23.69999998807907,
+            "startMs": 92.80000001192093
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 45.40000003576279,
+            "startMs": 603.6999999880791
+          },
+          {
+            "path": "/assets/AssetManifest.bin.json",
+            "type": "fetch",
+            "transferBytes": 454,
+            "encodedBytes": 154,
+            "decodedBytes": 250,
+            "durationMs": 21.19999998807907,
+            "startMs": 780.8000000119209
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 26.400000035762787,
+            "startMs": 600
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      },
+      {
+        "mode": "mobile_4g",
+        "run": 1,
+        "status": 200,
+        "ttfbMs": 203.89999997615814,
+        "domContentLoadedMs": 423,
+        "loadEventMs": 3125,
+        "appReadyMs": 5098.199999988079,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 276
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 276
+          }
+        ],
+        "lcp": {
+          "startTime": 276,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 5,
+        "longTaskTotalMs": 1251,
+        "longTaskBlockingMs": 1001,
+        "transferBytes": 2181258,
+        "encodedBytes": 2177658,
+        "requestCount": 12,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 4515.5,
+            "startMs": 420.19999998807907
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 2344.2999999523163,
+            "startMs": 422.30000001192093
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 474.10000002384186,
+            "startMs": 3285.699999988079
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 254.30000001192093,
+            "startMs": 421
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 172.60000002384186,
+            "startMs": 229.5999999642372
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 186.89999997615814,
+            "startMs": 3284.800000011921
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 168.39999997615814,
+            "startMs": 228.30000001192093
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 171.30000001192093,
+            "startMs": 3285.5
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 158.19999998807907,
+            "startMs": 229.30000001192093
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 155.5999999642372,
+            "startMs": 3127.300000011921
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 156.69999998807907,
+            "startMs": 3116.899999976158
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      },
+      {
+        "mode": "mobile_4g",
+        "run": 2,
+        "status": 200,
+        "ttfbMs": 205.19999998807907,
+        "domContentLoadedMs": 403,
+        "loadEventMs": 3116.100000023842,
+        "appReadyMs": 5102.800000011921,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 280
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 280
+          }
+        ],
+        "lcp": {
+          "startTime": 280,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 5,
+        "longTaskTotalMs": 1316,
+        "longTaskBlockingMs": 1066,
+        "transferBytes": 2181258,
+        "encodedBytes": 2177658,
+        "requestCount": 12,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 4515.399999976158,
+            "startMs": 422.80000001192093
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 2310.300000011921,
+            "startMs": 425.10000002384186
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 473.4000000357628,
+            "startMs": 3276.699999988079
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 293,
+            "startMs": 423.60000002384186
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 172.4000000357628,
+            "startMs": 232.19999998807907
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 186.5999999642372,
+            "startMs": 3275.400000035763
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 164.19999998807907,
+            "startMs": 231.4000000357628
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 171.19999998807907,
+            "startMs": 3276
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 158.10000002384186,
+            "startMs": 232.19999998807907
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 155.89999997615814,
+            "startMs": 3117.400000035763
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 156.9000000357628,
+            "startMs": 3107.199999988079
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      },
+      {
+        "mode": "mobile_4g",
+        "run": 3,
+        "status": 200,
+        "ttfbMs": 223.60000002384186,
+        "domContentLoadedMs": 417.9000000357628,
+        "loadEventMs": 3174.400000035763,
+        "appReadyMs": 5114.199999988079,
+        "paint": [
+          {
+            "name": "first-paint",
+            "startMs": 296
+          },
+          {
+            "name": "first-contentful-paint",
+            "startMs": 296
+          }
+        ],
+        "lcp": {
+          "startTime": 296,
+          "tag": "DIV",
+          "id": "loading",
+          "text": "Yro"
+        },
+        "longTaskCount": 5,
+        "longTaskTotalMs": 1318,
+        "longTaskBlockingMs": 1068,
+        "transferBytes": 2181258,
+        "encodedBytes": 2177658,
+        "requestCount": 12,
+        "resources": [
+          {
+            "path": "/canvaskit/chromium/canvaskit.wasm",
+            "type": "fetch",
+            "transferBytes": 1540830,
+            "encodedBytes": 1540530,
+            "decodedBytes": 5428806,
+            "durationMs": 4513.5,
+            "startMs": 437.30000001192093
+          },
+          {
+            "path": "/main.dart.js",
+            "type": "script",
+            "transferBytes": 524899,
+            "encodedBytes": 524599,
+            "decodedBytes": 2285379,
+            "durationMs": 2363.800000011921,
+            "startMs": 439
+          },
+          {
+            "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+            "type": "fetch",
+            "transferBytes": 75147,
+            "encodedBytes": 74847,
+            "decodedBytes": 171676,
+            "durationMs": 473.5999999642372,
+            "startMs": 3333.900000035763
+          },
+          {
+            "path": "/canvaskit/chromium/canvaskit.js",
+            "type": "script",
+            "transferBytes": 24448,
+            "encodedBytes": 24148,
+            "decodedBytes": 86226,
+            "durationMs": 283.39999997615814,
+            "startMs": 437.80000001192093
+          },
+          {
+            "path": "/flutter_bootstrap.js",
+            "type": "script",
+            "transferBytes": 4809,
+            "encodedBytes": 4509,
+            "decodedBytes": 13210,
+            "durationMs": 173.5,
+            "startMs": 247.10000002384186
+          },
+          {
+            "path": "/assets/fonts/MaterialIcons-Regular.otf",
+            "type": "fetch",
+            "transferBytes": 4031,
+            "encodedBytes": 3731,
+            "decodedBytes": 8300,
+            "durationMs": 187.0999999642372,
+            "startMs": 3332.900000035763
+          },
+          {
+            "path": "/analytics.js",
+            "type": "script",
+            "transferBytes": 2428,
+            "encodedBytes": 2128,
+            "decodedBytes": 7522,
+            "durationMs": 165.70000004768372,
+            "startMs": 246.19999998807907
+          },
+          {
+            "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+            "type": "fetch",
+            "transferBytes": 1253,
+            "encodedBytes": 953,
+            "decodedBytes": 1472,
+            "durationMs": 170.60000002384186,
+            "startMs": 3333.800000011921
+          },
+          {
+            "path": "/external_links.js",
+            "type": "script",
+            "transferBytes": 531,
+            "encodedBytes": 231,
+            "decodedBytes": 516,
+            "durationMs": 162.29999995231628,
+            "startMs": 246.9000000357628
+          },
+          {
+            "path": "/favicon.svg",
+            "type": "other",
+            "transferBytes": 473,
+            "encodedBytes": 173,
+            "decodedBytes": 190,
+            "durationMs": 153.9000000357628,
+            "startMs": 3177.199999988079
+          },
+          {
+            "path": "/assets/FontManifest.json",
+            "type": "fetch",
+            "transferBytes": 433,
+            "encodedBytes": 133,
+            "decodedBytes": 284,
+            "durationMs": 155.89999997615814,
+            "startMs": 3165.900000035763
+          }
+        ],
+        "consent": "unknown",
+        "errors": [],
+        "failed": [],
+        "external": []
+      }
+    ]
+  },
+  "limitations": [
+    "Analytics counts opted-in, measured visits. Unconsented or blocked visits are not represented; zero measured contacts does not prove zero actual inquiries.",
+    "Performance samples are three fresh-context Chromium runs per profile, not field Core Web Vitals or a Lighthouse score.",
+    "App-ready time is measured when the loading element is removed and Flutter view exists. Screenshots 500ms later confirmed visible content; this is not a standardized Time to Interactive metric.",
+    "Transfer totals cover resources completed at app-ready plus 500ms, not all subsequent page activity. The preview image completed in two desktop runs but not in the other runs.",
+    "Observed largest-contentful-paint corresponds to the initial Yro loading label, not the Flutter content, so it is not used to judge site readiness.",
+    "CPU throttling simulates slowdown on this browser host; it is not an actual mobile device test. CDN/browser-host conditions can differ from visitors.",
+    "Tests left Analytics consent unknown and made zero external requests, so they did not generate new production Analytics visits.",
+    "No application code, deployed release, key-event configuration, or custom-dimension settings changed during this read-only review."
+  ]
+}

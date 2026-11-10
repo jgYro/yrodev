@@ -1,4 +1,19 @@
-# Site validation - 2026-10-27
+# Site validation
+
+## Pre-commit review - 2026-11-10
+
+Reviewed the consent-based Analytics integration, IBM Plex assets and theme, Hosting policy, and repository documentation. No blocking issues were found in this review.
+
+- `sh scripts/check.sh`: passed with the pinned Flutter 3.47.8 SDK, unchanged lockfile, and no dependency resolution. Static analysis reported no issues, all 13 widget tests passed, and the release web build succeeded.
+- Playwright MCP: all 21 existing synthetic-tag Analytics checks passed against the rebuilt release and Hosting CSP. Coverage includes consent, URL sanitization, contact and portfolio keyboard activation, chapter dwell, persisted choice, withdrawal, blocked-tag behavior, and excluded hostnames. External requests were intercepted; these checks sent no production Analytics events.
+- Playwright MCP: reviewed layouts at 320, 390, 1024, and 1440 pixels and exercised all four chapters on desktop and mobile. Font requests succeeded, with no page errors, failed requests, or external requests in the layout checks. Desktop and narrow-mobile screenshots were visually inspected.
+- JavaScript syntax, changed JSON parsing, and `git diff --check`: passed. A limited credential-pattern scan of changed text files found no matches; this was not an exhaustive secret audit.
+- All four font SHA-256 values match the [approved inventory](security/supply-chain/2026-11-09-ibm-plex/inventory.json). The existing [font assessment](security/supply-chain/2026-11-09-ibm-plex/ASSESSMENT.md) and [accepted managed Google-tag exception](security/supply-chain/2026-11-02-google-tag/ASSESSMENT.md) remain applicable; no dependency versions or runtime scope changed during this review.
+- Staging exposed Git line-ending normalization of the upstream font license. A file-specific `.gitattributes` rule now preserves its reviewed bytes and original whitespace. Staged artifacts were checked against the working files.
+
+This review did not deploy a release or change GA4 reporting configuration. Historical results below describe their original checkpoints; the earlier widget-test execution limitations do not apply to this successful run.
+
+## Initial site validation - 2026-10-27
 
 - Dart 3.13.7 static analysis of `lib` and `test`: passed.
 - Flutter 3.47.8 release web build, using the existing locked dependencies and local CanvasKit resources: passed.
@@ -22,6 +37,8 @@ Dart analysis and the Flutter release web build passed with the unchanged depend
 Git preparation adds application-appropriate Flutter/Firebase ignores, credential and local-environment exclusions, line-ending defaults, editor settings, an SDK version file, a check script, and a root setup script. Shell syntax checks passed. Ignore behavior was checked without writing root Git metadata; the lockfile, Firebase project configuration, and source image asset remain eligible for version control. A limited secret-pattern scan of 173 candidate files found no matches. The scripts were not run to initialize root Git because `.git` creation is blocked by the environment. The remote repository was confirmed empty through the GitHub API; GitHub CLI authentication failed.
 
 The broader introduction was subsequently published to Firebase as version `28131afa2ef9ed31`. The live root returned 200 and matched the new HTML bytes. Playwright confirmed the new title, headline, and paragraph on the live site with no page errors.
+
+The owner subsequently initialized the root Git repository. Local `master`, its `origin/master` upstream, the requested GitHub URL, and initial commit `61e1a33` were verified. The one-time initialization script and obsolete setup instructions were removed. This cleanup changes documentation and tooling only; no application rebuild or redeployment is required.
 
 ## Portfolio-based copy update - 2026-10-27
 

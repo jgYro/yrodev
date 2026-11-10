@@ -1,15 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'analytics.dart';
+import 'analytics_preferences.dart';
 import 'contact.dart';
 import 'external_link.dart';
 import 'visuals.dart';
+import 'site_theme.dart';
 
-const ink = Color(0xFFE4EAE8);
-const navy = Color(0xFF081216);
-const mint = Color(0xFF8BC8BA);
-const muted = Color(0xFFA5B7B7);
-const paper = Color(0xFFE4EAE8);
-const line = Color(0xFF2A3C41);
 const chapterNames = [
   'Who We Are',
   'What We Do',
@@ -18,12 +17,18 @@ const chapterNames = [
 ];
 
 class YroSite extends StatefulWidget {
-  const YroSite({super.key});
+  const YroSite({super.key, this.analytics = const PlatformAnalytics()});
+  final SiteAnalytics analytics;
   @override
   State<YroSite> createState() => _YroSiteState();
 }
 
-class _YroSiteState extends State<YroSite> {
+class _YroSiteState extends State<YroSite> with WidgetsBindingObserver {
+  final _viewportKey = GlobalKey();
+  final _viewedChapters = <String>{};
+  Timer? _chapterDwell;
+  String? _dwellChapter;
+  bool _analyticsSettingsOpen = false;
   final _scroll = ScrollController();
   final _pageProgress = ValueNotifier<double>(0);
   final _chapterKeys = {for (final name in chapterNames) name: GlobalKey()};
@@ -48,7 +53,15 @@ class _YroSiteState extends State<YroSite> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scroll.addListener(_scheduleScrollUpdate);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _chapterDwell?.cancel();
+    _dwellChapter = null;
+    if (state == AppLifecycleState.resumed) _scheduleScrollUpdate();
   }
 
   @override
@@ -78,18 +91,28 @@ class _YroSiteState extends State<YroSite> {
         }
       }
       if (current != _activeChapter) setState(() => _activeChapter = current);
+      _scheduleChapterView(current);
     });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _chapterDwell?.cancel();
     _scroll.removeListener(_scheduleScrollUpdate);
     _scroll.dispose();
     _pageProgress.dispose();
     super.dispose();
   }
 
-  void _goTo(String name) {
+  void _goTo(String name, {String placement = 'chapter_navigation'}) {
+    final chapter = chapterIds[name];
+    if (chapter != null) {
+      widget.analytics.track('chapter_navigation', {
+        'chapter_id': chapter,
+        'placement': placement,
+      });
+    }
     setState(() => _menuOpen = false);
     // Measure after the compact navigation closes.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -106,6 +129,70 @@ class _YroSiteState extends State<YroSite> {
       );
     });
   }
+
+  bool _chapterVisible(String name) {
+    final chapter = _chapterKeys[name]?.currentContext?.findRenderObject();
+    final viewport = _viewportKey.currentContext?.findRenderObject();
+    if (chapter is! RenderBox ||
+        viewport is! RenderBox ||
+        !chapter.hasSize ||
+        !viewport.hasSize) {
+      return false;
+    }
+    final chapterRect = chapter.localToGlobal(Offset.zero) & chapter.size;
+    final viewportRect = viewport.localToGlobal(Offset.zero) & viewport.size;
+    final overlap = chapterRect.intersect(viewportRect);
+    final requiredHeight = chapter.size.height < viewport.size.height
+        ? chapter.size.height
+        : viewport.size.height;
+    return overlap.height >= requiredHeight * 0.5;
+  }
+
+  void _scheduleChapterView(String? name) {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    if ((lifecycle != null && lifecycle != AppLifecycleState.resumed) ||
+        widget.analytics.consent != AnalyticsConsent.granted ||
+        name == null ||
+        _viewedChapters.contains(name) ||
+        !_chapterVisible(name)) {
+      _chapterDwell?.cancel();
+      _dwellChapter = null;
+      return;
+    }
+    if (_dwellChapter == name && (_chapterDwell?.isActive ?? false)) return;
+    _chapterDwell?.cancel();
+    _dwellChapter = name;
+    _chapterDwell = Timer(const Duration(seconds: 1), () {
+      if (!mounted || !_chapterVisible(name)) return;
+      if (widget.analytics.track('chapter_view', {
+        'chapter_id': chapterIds[name]!,
+      })) {
+        _viewedChapters.add(name);
+      }
+    });
+  }
+
+  void _setAnalyticsConsent(bool granted) {
+    widget.analytics.setConsent(granted);
+    setState(() => _analyticsSettingsOpen = false);
+    _scheduleScrollUpdate();
+  }
+
+  Widget _contact(String placement, {String? label, bool outlined = false}) =>
+      EmailContact(
+        label: label ?? businessEmail,
+        outlined: outlined,
+        onActivate: () => widget.analytics.track('contact_click', {
+          'placement': placement,
+          'contact_context': switch (placement) {
+            'mind_country' => 'community',
+            'working_with_yro' => 'business',
+            _ => 'general',
+          },
+          'method': 'email',
+          'active_chapter': chapterIds[_activeChapter] ?? 'hero',
+        }),
+      );
 
   void _goHome() {
     setState(() => _menuOpen = false);
@@ -133,39 +220,42 @@ class _YroSiteState extends State<YroSite> {
                 value: progress,
                 minHeight: 2,
                 backgroundColor: line.withValues(alpha: 0.45),
-                color: mint,
+                color: bloodRedEdge,
               ),
             ),
           ),
           Expanded(
             child: SelectionArea(
               child: SingleChildScrollView(
+                key: _viewportKey,
                 controller: _scroll,
                 child: Column(
                   children: [
-                    _Hero(onExplore: () => _goTo('What We Do')),
+                    _Hero(
+                      onExplore: () => _goTo('What We Do', placement: 'hero'),
+                    ),
                     _chapter(
                       index: 0,
                       description: 'EXPERIENCE & APPROACH',
-                      color: const Color(0xFF0A1519),
+                      color: surfaceAlt,
                       children: [_about(), _howWeWork()],
                     ),
                     _chapter(
                       index: 1,
                       description: 'CAPABILITIES & CREATIVE WORK',
-                      color: const Color(0xFF12232D),
+                      color: surface,
                       children: [_capabilities(), _media()],
                     ),
                     _chapter(
                       index: 2,
                       description: 'APPS & RECOGNITION',
-                      color: const Color(0xFF070C11),
+                      color: canvasBlack,
                       children: [_apps(), _recognition()],
                     ),
                     _chapter(
                       index: 3,
                       description: 'APPALACHIAN ROOTS',
-                      color: const Color(0xFF16271F),
+                      color: surfaceAlt,
                       children: [_mindCountry()],
                     ),
                     _footer(),
@@ -174,6 +264,16 @@ class _YroSiteState extends State<YroSite> {
               ),
             ),
           ),
+          if (widget.analytics.available &&
+              (widget.analytics.consent == AnalyticsConsent.unknown ||
+                  _analyticsSettingsOpen))
+            AnalyticsPreferences(
+              consent: widget.analytics.consent,
+              onChoice: _setAnalyticsConsent,
+              onClose: _analyticsSettingsOpen
+                  ? () => setState(() => _analyticsSettingsOpen = false)
+                  : null,
+            ),
         ],
       ),
     ),
@@ -210,15 +310,19 @@ class _YroSiteState extends State<YroSite> {
     return Semantics(
       selected: selected,
       child: TextButton(
-        onPressed: () => _goTo(name),
+        onPressed: () =>
+            _goTo(name, placement: _menuOpen ? 'mobile_menu' : 'header'),
         style: TextButton.styleFrom(
-          foregroundColor: selected ? mint : muted,
+          foregroundColor: selected ? ink : muted,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(name, style: const TextStyle(fontSize: 13)),
+            Text(
+              name,
+              style: const TextStyle(fontFamily: monoFont, fontSize: 12),
+            ),
             const SizedBox(height: 8),
             AnimatedContainer(
               duration: MediaQuery.disableAnimationsOf(context)
@@ -226,7 +330,7 @@ class _YroSiteState extends State<YroSite> {
                   : const Duration(milliseconds: 220),
               height: 1,
               width: selected ? 26 : 0,
-              color: mint,
+              color: purple,
             ),
           ],
         ),
@@ -235,7 +339,7 @@ class _YroSiteState extends State<YroSite> {
   }
 
   Widget _header() => ColoredBox(
-    color: navy,
+    color: canvasBlack,
     child: Frame(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -255,12 +359,12 @@ class _YroSiteState extends State<YroSite> {
                     if (!compact) ...[
                       for (final name in chapterNames) _chapterLink(name),
                       const SizedBox(width: 28),
-                      const EmailContact(label: 'Contact', outlined: true),
+                      _contact('header', label: 'Contact', outlined: true),
                     ] else
                       IconButton(
                         tooltip: _menuOpen ? 'Close menu' : 'Open menu',
                         onPressed: () => setState(() => _menuOpen = !_menuOpen),
-                        color: mint,
+                        color: ink,
                         icon: Icon(_menuOpen ? Icons.close : Icons.menu),
                       ),
                   ],
@@ -274,7 +378,7 @@ class _YroSiteState extends State<YroSite> {
                     runSpacing: 8,
                     children: [
                       for (final name in chapterNames) _chapterLink(name),
-                      const EmailContact(label: 'Contact'),
+                      _contact('mobile_menu', label: 'Contact'),
                     ],
                   ),
                 ),
@@ -415,7 +519,7 @@ class _YroSiteState extends State<YroSite> {
                 style: TextStyle(color: muted, fontSize: 16, height: 1.85),
               ),
               const SizedBox(height: 26),
-              const EmailContact(),
+              _contact('working_with_yro'),
             ],
           );
           const steps = Column(
@@ -493,7 +597,7 @@ class _YroSiteState extends State<YroSite> {
                     'Software & cryptographic assurance',
                     'Vulnerability assessment & research',
                   ],
-                  accent: const Color(0xFF8BC8BA),
+                  accent: purple,
                 ),
                 CapabilityCard(
                   key: _sections['R&D'],
@@ -506,7 +610,7 @@ class _YroSiteState extends State<YroSite> {
                     'Custom software & systems',
                     'Technical strategy & evaluation',
                   ],
-                  accent: const Color(0xFF88A9BA),
+                  accent: ink,
                 ),
                 CapabilityCard(
                   key: _sections['AI'],
@@ -519,7 +623,7 @@ class _YroSiteState extends State<YroSite> {
                     'Predictive analytics & decision support',
                     'Secure AI integration',
                   ],
-                  accent: const Color(0xFFB8B79A),
+                  accent: bloodRedEdge,
                 ),
               ];
               if (constraints.maxWidth < 880) {
@@ -582,14 +686,15 @@ class _YroSiteState extends State<YroSite> {
               const ExternalLink(
                 url: 'https://tunings.io/',
                 label: 'Open tunings.io in a new tab',
+                analyticsPlacement: 'portfolio_text',
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Open tunings.io', style: TextStyle(color: mint)),
+                      Text('Open tunings.io', style: TextStyle(color: purple)),
                       SizedBox(width: 12),
-                      Icon(Icons.north_east, color: mint, size: 17),
+                      Icon(Icons.north_east, color: purple, size: 17),
                     ],
                   ),
                 ),
@@ -599,12 +704,13 @@ class _YroSiteState extends State<YroSite> {
           final preview = ExternalLink(
             url: 'https://tunings.io/',
             label: 'Tunings website preview. Open tunings.io in a new tab',
+            analyticsPlacement: 'portfolio_preview',
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: const Color(0xFF101E23),
+                color: surface,
                 border: Border.all(color: line),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.zero,
               ),
               child: Column(
                 children: [
@@ -612,7 +718,7 @@ class _YroSiteState extends State<YroSite> {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     child: Row(
                       children: [
-                        Icon(Icons.language, color: mint, size: 16),
+                        Icon(Icons.language, color: purple, size: 16),
                         SizedBox(width: 10),
                         Text(
                           'tunings.io',
@@ -665,8 +771,8 @@ class _YroSiteState extends State<YroSite> {
           height: compact ? 260 : 350,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: const Color(0xFF112526),
-            borderRadius: BorderRadius.circular(4),
+            color: surface,
+            borderRadius: BorderRadius.zero,
           ),
           child: Stack(
             fit: StackFit.expand,
@@ -718,7 +824,7 @@ class _YroSiteState extends State<YroSite> {
                 Text(
                   'AUDIO',
                   style: TextStyle(
-                    color: mint,
+                    color: purple,
                     fontSize: 10,
                     letterSpacing: 1.8,
                   ),
@@ -726,7 +832,7 @@ class _YroSiteState extends State<YroSite> {
                 Text(
                   'VIDEO',
                   style: TextStyle(
-                    color: mint,
+                    color: purple,
                     fontSize: 10,
                     letterSpacing: 1.8,
                   ),
@@ -734,7 +840,7 @@ class _YroSiteState extends State<YroSite> {
                 Text(
                   '3D',
                   style: TextStyle(
-                    color: mint,
+                    color: purple,
                     fontSize: 10,
                     letterSpacing: 1.8,
                   ),
@@ -742,7 +848,7 @@ class _YroSiteState extends State<YroSite> {
                 Text(
                   'COMMERCIAL',
                   style: TextStyle(
-                    color: mint,
+                    color: purple,
                     fontSize: 10,
                     letterSpacing: 1.8,
                   ),
@@ -799,7 +905,7 @@ class _YroSiteState extends State<YroSite> {
                 style: TextStyle(color: muted, fontSize: 16, height: 1.85),
               ),
               const SizedBox(height: 26),
-              const EmailContact(),
+              _contact('mind_country'),
             ],
           );
           const landscape = ExcludeSemantics(
@@ -827,7 +933,7 @@ class _YroSiteState extends State<YroSite> {
   );
 
   Widget _footer() => ColoredBox(
-    color: navy,
+    color: canvasBlack,
     child: Frame(
       vertical: 44,
       child: Column(
@@ -841,20 +947,26 @@ class _YroSiteState extends State<YroSite> {
               const Wordmark(),
               const Text(
                 'Cybersecurity, software, and creative work.',
-                style: TextStyle(color: Color(0xFFD0DEDC), fontSize: 18),
+                style: TextStyle(color: ink, fontSize: 18),
               ),
-              const EmailContact(),
+              _contact('footer'),
               TextButton.icon(
                 onPressed: _goHome,
                 icon: const Icon(Icons.north, size: 17),
                 label: const Text('Back to top'),
-                style: TextButton.styleFrom(foregroundColor: mint),
+                style: TextButton.styleFrom(foregroundColor: purple),
               ),
+              if (widget.analytics.available)
+                TextButton(
+                  onPressed: () =>
+                      setState(() => _analyticsSettingsOpen = true),
+                  child: const Text('Analytics settings'),
+                ),
             ],
           ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 28),
-            child: Divider(color: Color(0xFF2B3B40), height: 1),
+            child: Divider(color: line, height: 1),
           ),
           Wrap(
             spacing: 32,
@@ -862,12 +974,12 @@ class _YroSiteState extends State<YroSite> {
             children: [
               Text(
                 '© ${DateTime.now().year} Yro LLC. All rights reserved.',
-                style: const TextStyle(color: Color(0xFF99AEAE), fontSize: 12),
+                style: const TextStyle(color: muted, fontSize: 12),
               ),
               const Text(
                 'CYBER  /  R&D  /  AI  /  MEDIA',
                 style: TextStyle(
-                  color: Color(0xFF99AEAE),
+                  color: muted,
                   fontSize: 11,
                   letterSpacing: 1.5,
                 ),
@@ -964,17 +1076,14 @@ class _ChapterIntroState extends State<ChapterIntro> {
                   Text(
                     widget.number,
                     style: const TextStyle(
-                      color: mint,
+                      color: purple,
+                      fontFamily: monoFont,
                       fontSize: 12,
                       letterSpacing: 2,
                     ),
                   ),
                   const SizedBox(width: 18),
-                  Container(
-                    width: 38,
-                    height: 1,
-                    color: mint.withValues(alpha: 0.5),
-                  ),
+                  Container(width: 38, height: 1, color: bloodRedEdge),
                   const SizedBox(width: 18),
                   Expanded(child: Eyebrow(widget.description)),
                 ],
@@ -994,7 +1103,7 @@ class _ChapterIntroState extends State<ChapterIntro> {
                 ),
               ),
               const SizedBox(height: 42),
-              Divider(color: mint.withValues(alpha: 0.2), height: 1),
+              const Divider(color: line, height: 1),
             ],
           ),
         ),
@@ -1010,8 +1119,8 @@ class _Hero extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: const BoxDecoration(
-      color: navy,
-      border: Border(top: BorderSide(color: Color(0xFF223439))),
+      color: canvasBlack,
+      border: Border(top: BorderSide(color: line)),
     ),
     child: Frame(
       child: LayoutBuilder(
@@ -1027,10 +1136,10 @@ class _Hero extends StatelessWidget {
                 child: Text(
                   'Software, security,\nand creative work.',
                   style: TextStyle(
-                    color: paper,
-                    fontSize: compact ? 42 : 62,
-                    height: 1.08,
-                    letterSpacing: -1.8,
+                    color: ink,
+                    fontSize: compact ? 42 : 64,
+                    height: 1.04,
+                    letterSpacing: -1.6,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1042,11 +1151,7 @@ class _Hero extends StatelessWidget {
                   'We develop software, strengthen security, and produce digital media. '
                   'Our work combines engineering, applied AI, and creative production '
                   'to help people and organizations solve problems and develop ideas.',
-                  style: TextStyle(
-                    color: Color(0xFFADBFBE),
-                    fontSize: 17,
-                    height: 1.8,
-                  ),
+                  style: TextStyle(color: muted, fontSize: 17, height: 1.7),
                 ),
               ),
               const SizedBox(height: 34),
@@ -1112,7 +1217,12 @@ class CapabilityCard extends StatelessWidget {
         children: [
           Text(
             number,
-            style: TextStyle(color: accent, fontSize: 11, letterSpacing: 2),
+            style: const TextStyle(
+              color: muted,
+              fontFamily: monoFont,
+              fontSize: 11,
+              letterSpacing: 2,
+            ),
           ),
           const SizedBox(height: 24),
           Semantics(
@@ -1207,10 +1317,10 @@ class Wordmark extends StatelessWidget {
         Text(
           'Yro',
           style: TextStyle(
-            color: mint,
+            color: ink,
             fontWeight: FontWeight.w600,
             fontSize: 40,
-            letterSpacing: -2.5,
+            letterSpacing: -1.5,
             height: 1,
           ),
         ),
@@ -1219,7 +1329,8 @@ class Wordmark extends StatelessWidget {
           child: Text(
             'LLC',
             style: TextStyle(
-              color: Color(0xFFA7BFBE),
+              color: muted,
+              fontFamily: monoFont,
               fontSize: 10,
               letterSpacing: 2,
             ),
@@ -1238,11 +1349,12 @@ class Eyebrow extends StatelessWidget {
   Widget build(BuildContext context) => Text(
     text,
     style: TextStyle(
-      color: light ? mint : const Color(0xFF9DAF9B),
-      fontSize: 10,
+      color: light ? ink : purple,
+      fontFamily: monoFont,
+      fontSize: 11,
       height: 1.6,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 2,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 1.4,
     ),
   );
 }
@@ -1275,11 +1387,11 @@ class SiteButton extends StatelessWidget {
   Widget build(BuildContext context) => TextButton(
     onPressed: onPressed,
     style: TextButton.styleFrom(
-      backgroundColor: outlined ? Colors.transparent : mint,
-      foregroundColor: outlined ? mint : navy,
+      backgroundColor: outlined ? Colors.transparent : bloodRed,
+      foregroundColor: ink,
       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
-      side: outlined ? const BorderSide(color: Color(0xFF466762)) : null,
-      textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      side: BorderSide(color: outlined ? purple : bloodRedEdge),
+      textStyle: const TextStyle(fontFamily: monoFont, fontSize: 12),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
@@ -1336,13 +1448,20 @@ class EmailContact extends StatelessWidget {
     super.key,
     this.label = businessEmail,
     this.outlined = false,
+    this.onActivate,
   });
   final String label;
   final bool outlined;
+  final VoidCallback? onActivate;
 
   @override
   Widget build(BuildContext context) {
     Future<void> open() async {
+      try {
+        onActivate?.call();
+      } catch (_) {
+        // Measurement must never prevent opening the contact destination.
+      }
       final opened = await openBusinessEmail();
       if (!opened && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1365,12 +1484,14 @@ class EmailContact extends StatelessWidget {
           iconAlignment: IconAlignment.end,
           label: Text(label),
           style: TextButton.styleFrom(
-            foregroundColor: mint,
+            foregroundColor: outlined ? ink : purple,
+            backgroundColor: outlined ? bloodRed : Colors.transparent,
+            textStyle: const TextStyle(fontFamily: monoFont, fontSize: 12),
             padding: EdgeInsets.symmetric(
               horizontal: outlined ? 20 : 0,
               vertical: 16,
             ),
-            side: outlined ? const BorderSide(color: line) : null,
+            side: outlined ? const BorderSide(color: bloodRedEdge) : null,
           ),
         ),
       ),

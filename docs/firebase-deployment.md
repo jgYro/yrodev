@@ -1,6 +1,22 @@
 # Firebase Hosting deployment
 
-## Current release: broader introduction
+## Current release: black, white, blood red, purple, and IBM Plex
+
+On 2026-11-09, the visual refresh was deployed as Hosting version `projects/228228369868/sites/yro-llc/versions/f89fed723c5b9267` to [yro.dev](https://yro.dev/). The design uses flat near-black surfaces, white type, dark blood-red action surfaces, purple graphic accents, square controls, and a matching favicon/loading state. IBM Plex Sans is used for main typography and IBM Plex Mono for navigation/labels. Four unmodified font files are self-hosted under their OFL license after the [pinned-font assessment](security/supply-chain/2026-11-09-ibm-plex/ASSESSMENT.md); Pub dependency versions remain unchanged.
+
+Analysis, the release build, and all 13 existing widget tests passed. Tests now load the actual bundled fonts instead of Ahem; the narrow-width failures from the earlier baseline no longer occur with the real typography. A local Flutter hot restart completed successfully. Playwright MCP checked 320, 390, 1024, and 1440-pixel views, all chapter navigation, consent controls, and the existing analytics regression scenarios. Main text/button color pairs have contrast ratios of at least 7.78:1 in their default states. Screenshots were visually inspected on desktop and mobile.
+
+The live HTML, application JavaScript, favicon, and all four fonts match local SHA-256 values. Initial requests remain same-origin with no Analytics cookies before consent. No JavaScript errors or failed requests were observed. The evidence is in [yro-plex-verification.json](yro-plex-verification.json), with screenshots under ignored `.playwright-mcp/plex-*.png`. Content, contact destinations, event names, and the production-only collection rule are preserved.
+
+## 2026-11-02 release: Analytics on yro.dev
+
+On 2026-11-02, Analytics was deployed as Hosting version `projects/228228369868/sites/yro-llc/versions/9cfeb2e4f2f74875`. The production address is [yro.dev](https://yro.dev/), with matching canonical metadata. Google tag `G-BWE0W2NDHG` measures opted-in visits, contact intent, chapter engagement, and portfolio interest only on that hostname. The original website layout is preserved; the analytics choice and footer settings are the new interface controls. No Dart/npm package versions changed. The managed Google runtime is covered by the [accepted exception](security/supply-chain/2026-11-02-google-tag/ASSESSMENT.md).
+
+The live page returned 200 with the expected CSP, zero external requests/cookies before consent, and a `page_view` collection response of HTTP 204 after acceptance. Live `analytics.js` and `main.dart.js` SHA-256 hashes match the tested local build. No JavaScript errors were observed. Transport success is not confirmation of processed Analytics reports. Details are in [firebase-analytics-verification.json](firebase-analytics-verification.json) and the [reporting guide](firebase-analytics-plan.md).
+
+Static analysis, all six focused Analytics widget tests, the release build, and Playwright MCP consent/event checks passed. Four existing layout tests fail identically in an unchanged `HEAD` checkout; their unrelated layout changes were reverted. The entire test suite is therefore not reported as passing. The two built-in Firebase host aliases still serve the release, but cannot initialize Analytics.
+
+## 2026-10-28 release: broader introduction
 
 On 2026-10-28, the broader introduction was deployed as Hosting version `projects/228228369868/sites/yro-llc/versions/28131afa2ef9ed31`. It presents software, security, applied AI, and creative media, with matching metadata. Dart analysis, the release build, and desktop/mobile Playwright checks passed. The live HTML matches the rebuilt artifact, and the rendered live hero was verified after deployment. No package versions or Hosting security settings changed.
 

@@ -1,31 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'analytics.dart';
 import 'site.dart';
+import 'site_theme.dart';
 
 void main() => runApp(const YroApp());
 
 class YroApp extends StatelessWidget {
-  const YroApp({super.key});
+  const YroApp({super.key, this.analytics = const PlatformAnalytics()});
+
+  final SiteAnalytics analytics;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Yro LLC | Software, Security, AI & Media',
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      useMaterial3: true,
-      scaffoldBackgroundColor: navy,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: mint,
-        brightness: Brightness.dark,
-      ),
-      fontFamily: 'Arial',
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          minimumSize: const Size(48, 48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        ),
-      ),
-    ),
-    home: const YroSite(),
+    theme: buildSiteTheme(),
+    home: YroSite(analytics: analytics),
   );
 }

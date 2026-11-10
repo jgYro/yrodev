@@ -1,0 +1,12 @@
+[GNUPG:] NEWSIG
+gpg: Signature made Wed Nov  4 07:28:23 2026 EST
+gpg:                using RSA key B5690EEEBB952194
+[GNUPG:] KEY_CONSIDERED 968479A1AFF927E37D1A566BB5690EEEBB952194 0
+[GNUPG:] SIG_ID 9ONucDHoJmNYgJ6tyM4e8bpxRSA 2026-11-04 1793795303
+[GNUPG:] GOODSIG B5690EEEBB952194 GitHub <noreply@github.com>
+gpg: Good signature from "GitHub <noreply@github.com>" [unknown]
+[GNUPG:] VALIDSIG 968479A1AFF927E37D1A566BB5690EEEBB952194 2026-11-04 1793795303 0 4 0 1 8 00 968479A1AFF927E37D1A566BB5690EEEBB952194
+[GNUPG:] TRUST_UNDEFINED 0 pgp
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 9684 79A1 AFF9 27E3 7D1A  566B B569 0EEE BB95 2194

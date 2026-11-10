@@ -20,7 +20,7 @@ The owner supplied the individual acceptance claim in this conversation. Public 
 
 ## Files and publication
 
-The project root is the authoritative source. Creating a root `.git` directory is blocked by this environment, so its checkpoint is saved in the existing repository at `.site/yro-overview`. That repository's `source/` directory contains the complete source snapshot, platform scaffolding, lockfile, tests, documentation, and selected preview images. Tool caches and browser logs remain ignored.
+The project root is the authoritative Git repository, on `master` tracking `origin/master` at `https://github.com/jgYro/yrodev.git`. Historical checkpoints remain in the ignored `.site/yro-overview` directory. Tool caches, generated builds, credentials, and browser logs remain ignored.
 
 The website is live at [yro-llc.web.app](https://yro-llc.web.app) on Firebase Hosting project `yro-llc`, deployed and verified on 2026-10-28. The root `firebase.json` and `.firebaserc` define that deployment. See [firebase-deployment.md](firebase-deployment.md) for release details and checks. The older Sites registration and prepared web output remain preserved in `.site/yro-overview`; they are separate from the current Firebase deployment.
 
@@ -32,4 +32,4 @@ No new program dependencies were introduced.
 
 ## Root Git setup
 
-The requested GitHub repository is `https://github.com/jgYro/yrodev.git`, with `master` as its primary branch. GitHub's public API confirmed it was empty during setup. Root initialization remains pending: this environment denied creation of `.git`, and the available GitHub credentials failed authentication. `scripts/setup-git.sh` contains the complete owner-run initialization and first-commit procedure. Flutter/Firebase ignore rules, line-ending defaults, the SDK version file, and a check script are prepared. See `git-workflow.md`. The historical checkpoint repository is preserved separately.
+The owner completed root initialization. On 2026-10-28, local `master` was verified tracking `origin/master`, with the requested `origin` URL and initial commit `61e1a33`. The one-time setup script was removed. Flutter/Firebase ignore rules, line-ending defaults, the SDK version file, and `scripts/check.sh` remain. See `git-workflow.md` for the ongoing workflow.

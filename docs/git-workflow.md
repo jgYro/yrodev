@@ -1,34 +1,8 @@
 # Git and release workflow
 
-The intended repository is [jgYro/yrodev](https://github.com/jgYro/yrodev), with `master` as the primary branch. Work from the Flutter project root, not the historical `.site/yro-overview` checkpoint directory.
+The repository is [jgYro/yrodev](https://github.com/jgYro/yrodev), with local `master` tracking `origin/master`. The `origin` URL is `https://github.com/jgYro/yrodev.git`. Work from the Flutter project root. The ignored `.site/yro-overview` directory contains historical checkpoints and is not the active repository.
 
-## Initial setup
-
-The repository was confirmed public and empty on 2026-10-28. This environment denied creation of the project's root `.git` directory, so initial setup must run from the owner's terminal:
-
-```sh
-cd /Users/jerichogregory/Yro/projects/yro
-sh scripts/setup-git.sh
-```
-
-The script initializes `master`, configures the requested `origin`, uses the business commit identity `Yro LLC <business@yro.dev>`, stages the project according to its ignore rules, and creates the initial commit. It stops if a root repository already exists. It does not change global Git settings or rewrite the historical checkpoint repository.
-
-Publish the initial branch after authenticating with GitHub:
-
-```sh
-git push -u origin master
-```
-
-The GitHub CLI reported invalid credentials during setup. If using `gh` to reauthenticate, run its browser flow from your terminal. An invalid environment token can override stored credentials, so these commands omit those overrides for this operation:
-
-```sh
-env -u GH_TOKEN -u GITHUB_TOKEN gh auth login --hostname github.com --git-protocol https --web
-env -u GH_TOKEN -u GITHUB_TOKEN gh auth setup-git --hostname github.com
-env -u GH_TOKEN -u GITHUB_TOKEN git push -u origin master
-env -u GH_TOKEN -u GITHUB_TOKEN gh repo edit jgYro/yrodev --default-branch master
-```
-
-The default branch change requires a successful first push so `master` exists remotely. Never force-push over an unexpected remote history; fetch and review it first.
+Root initialization is complete. The one-time setup script has been removed. Fetch and review unexpected remote changes before integrating them; preserve shared history.
 
 ## Tracked files and local state
 

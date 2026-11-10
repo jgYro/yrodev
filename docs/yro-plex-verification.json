@@ -1,0 +1,256 @@
+{
+  "date": "2026-11-09",
+  "hostingVersion": "projects/228228369868/sites/yro-llc/versions/f89fed723c5b9267",
+  "palette": {
+    "black": "#050505",
+    "white": "#FFFFFF",
+    "bloodRed": "#7E1025",
+    "purple": "#B49BD6"
+  },
+  "fonts": {
+    "body": "IBM Plex Sans",
+    "labels": "IBM Plex Mono",
+    "sourceCommit": "48e8676114c04f29033b4b53da4ec579f8846297"
+  },
+  "checks": {
+    "analysis": "passed",
+    "widgetTests": "13 passed, real bundled fonts loaded",
+    "releaseBuild": "passed",
+    "hotRestart": "performed successfully via existing Flutter web-server",
+    "trackingRegression": "21 synthetic-tag Playwright checks passed",
+    "fontDependencyAssessment": "PASS for four pinned assets; no npm wrapper or telemetry dependency added"
+  },
+  "contrastRatios": [
+    {
+      "name": "white_on_blood_red",
+      "contrast": 10.563620967347012
+    },
+    {
+      "name": "body_on_surface",
+      "contrast": 9.651989365370358
+    },
+    {
+      "name": "purple_on_surface",
+      "contrast": 7.783817414910026
+    },
+    {
+      "name": "white_on_black",
+      "contrast": 20.381370411830552
+    }
+  ],
+  "browserReview": [
+    {
+      "size": {
+        "width": 1440,
+        "height": 1000
+      },
+      "fonts": [
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Regular.ttf",
+          "bytes": 200500
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Medium.ttf",
+          "bytes": 202460
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-SemiBold.ttf",
+          "bytes": 202632
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+          "bytes": 1472
+        },
+        {
+          "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+          "bytes": 171676
+        }
+      ],
+      "errors": [],
+      "failed": [],
+      "external": [],
+      "consent": "denied",
+      "background": "rgb(5, 5, 5)"
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "fonts": [
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Regular.ttf",
+          "bytes": 200500
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Medium.ttf",
+          "bytes": 202460
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-SemiBold.ttf",
+          "bytes": 202632
+        },
+        {
+          "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+          "bytes": 1472
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+          "bytes": 171676
+        }
+      ],
+      "errors": [],
+      "failed": [],
+      "external": [],
+      "consent": "denied",
+      "background": "rgb(5, 5, 5)"
+    },
+    {
+      "size": {
+        "width": 320,
+        "height": 720
+      },
+      "fonts": [
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Regular.ttf",
+          "bytes": 200500
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Medium.ttf",
+          "bytes": 202460
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-SemiBold.ttf",
+          "bytes": 202632
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+          "bytes": 1472
+        },
+        {
+          "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+          "bytes": 171676
+        }
+      ],
+      "errors": [],
+      "failed": [],
+      "external": [],
+      "consent": "denied",
+      "background": "rgb(5, 5, 5)"
+    },
+    {
+      "size": {
+        "width": 1024,
+        "height": 800
+      },
+      "fonts": [
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Regular.ttf",
+          "bytes": 200500
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-Medium.ttf",
+          "bytes": 202460
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexSans-SemiBold.ttf",
+          "bytes": 202632
+        },
+        {
+          "path": "/assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf",
+          "bytes": 173052
+        },
+        {
+          "path": "/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+          "bytes": 1472
+        },
+        {
+          "path": "/assets/fonts/fallback/Roboto-Regular.ttf",
+          "bytes": 171676
+        }
+      ],
+      "errors": [],
+      "failed": [],
+      "external": [],
+      "consent": "denied",
+      "background": "rgb(5, 5, 5)"
+    }
+  ],
+  "live": {
+    "status": 200,
+    "assets": {
+      "index.html": {
+        "status": 200,
+        "matches": true,
+        "sha256": "7140d10ee056466d0923a625de8f408c5f01e00f2613d78f17b78376346f5920"
+      },
+      "main.dart.js": {
+        "status": 200,
+        "matches": true,
+        "sha256": "4f79ec2b1f2399db9575f7968fcfdb319aed7f3e95060ce0c8beb964c2ffa28a"
+      },
+      "favicon.svg": {
+        "status": 200,
+        "matches": true,
+        "sha256": "b6ffa5efab527c0445734ec6f276a5e818f62b650fb9d12307eb5e08ae0dffbd"
+      },
+      "assets/assets/fonts/ibm-plex/IBMPlexSans-Regular.ttf": {
+        "status": 200,
+        "matches": true,
+        "sha256": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5"
+      },
+      "assets/assets/fonts/ibm-plex/IBMPlexSans-Medium.ttf": {
+        "status": 200,
+        "matches": true,
+        "sha256": "331c8639d7598b2cde62a911a71db195e30cb655cd6bdf2e324a7e984955f907"
+      },
+      "assets/assets/fonts/ibm-plex/IBMPlexSans-SemiBold.ttf": {
+        "status": 200,
+        "matches": true,
+        "sha256": "a20caf8286023a6a7a85e40b1d2a4ae9fc3e3b1f9eda8f4c542dd4986af67bb1"
+      },
+      "assets/assets/fonts/ibm-plex/IBMPlexMono-Regular.ttf": {
+        "status": 200,
+        "matches": true,
+        "sha256": "7c6fbddca4b700be918f5f6183d9bd4464fa427fe435f0b480d77fe2bb8c5a43"
+      }
+    },
+    "state": {
+      "background": "rgb(5, 5, 5)",
+      "consent": "unknown",
+      "cookies": "",
+      "canonical": "https://yro.dev/"
+    },
+    "errors": [],
+    "failed": [],
+    "external": []
+  }
+}

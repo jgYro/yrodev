@@ -1,0 +1,45 @@
+{
+  "verified_at": "2026-11-02",
+  "hosting_version": "projects/228228369868/sites/yro-llc/versions/9cfeb2e4f2f74875",
+  "status": 200,
+  "canonical": "https://yro.dev/",
+  "beforeConsent": {
+    "external": 0,
+    "cookies": 0
+  },
+  "responses": [
+    {
+      "status": 204,
+      "event": "page_view",
+      "debug": null
+    }
+  ],
+  "external": [
+    {
+      "host": "www.googletagmanager.com",
+      "path": "/gtag/js"
+    },
+    {
+      "host": "www.google-analytics.com",
+      "path": "/g/collect"
+    }
+  ],
+  "errors": [],
+  "artifacts": {
+    "analytics.js": {
+      "matches": true,
+      "sha256": "e2f1852bd2dbcd8158d19eb7d7eef516a3aabc776b733cd72922470c6c6db3ed"
+    },
+    "main.dart.js": {
+      "matches": true,
+      "sha256": "95271fa90b7752d6f836ce42fe9681b4d1e8b7243e382ad999417901200f05bf"
+    }
+  },
+  "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google-analytics.com https://region1.google-analytics.com; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://region1.analytics.google.com https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'",
+  "limitations": [
+    "Collection HTTP 204 confirms transport acceptance, not processed report visibility.",
+    "Debug mode was requested by the test harness but not confirmed by the inspected _dbg query field; verification visits may appear in ordinary reports.",
+    "Key-event and custom-dimension settings were not changed because Analytics Admin OAuth scopes are unavailable.",
+    "Four original layout tests fail identically in an unchanged HEAD checkout."
+  ]
+}

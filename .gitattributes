@@ -14,3 +14,6 @@
 *.woff binary
 *.woff2 binary
 *.wasm binary
+
+# Preserve the reviewed upstream license, including its original whitespace.
+assets/fonts/ibm-plex/LICENSE.txt -text -whitespace

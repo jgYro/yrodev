@@ -1,0 +1,41 @@
+{
+  "source": "https://www.googletagmanager.com/gtag/js?id=G-BWE0W2NDHG",
+  "bytes": 473602,
+  "sha256": "95903419271b41fe18f2b428165c2211209b53e614397115a1148fe9ac90d909",
+  "sha384": "7690e2a2d9111cfd80c381db6a04c44951f37491b7ed93ea41b59bd3a5beda2a3b8b037addac58f1c92465f93d937ccf",
+  "literal_url_hosts": [
+    ".",
+    "ad.doubleclick.net",
+    "ade.googlesyndication.com",
+    "adservice.google.com",
+    "cct.google",
+    "m.youtube.com",
+    "pagead2.googlesyndication.com",
+    "stats.g.doubleclick.net",
+    "www.",
+    "www.google.com",
+    "www.googleadservices.com",
+    "www.googletagmanager.com",
+    "www.merchant-center-analytics.goog",
+    "www.youtube.com"
+  ],
+  "signal_counts": {
+    "document.cookie": 2,
+    "localStorage": 4,
+    "sessionStorage": 0,
+    "createElement": 7,
+    "sendBeacon": 6,
+    "XMLHttpRequest": 3,
+    "fetch(": 6,
+    "serviceWorker": 1,
+    "eval(": 0,
+    "new Function": 0,
+    "gtag/destination": 2,
+    "doubleclick.net": 6,
+    "google-analytics.com": 2,
+    "user_data": 55,
+    "form": 51,
+    "password": 6
+  },
+  "header": "HTTP/2 200 \ncontent-type: application/javascript; charset=UTF-8\naccess-control-allow-origin: *\naccess-control-allow-credentials: true\naccess-control-allow-headers: Cache-Control\nvary: Accept-Encoding\ndate: Mon, 02 Nov 2026 22:10:04 GMT\nexpires: Mon, 02 Nov 2026 22:10:04 GMT\ncache-control: private, max-age=900\nstrict-transport-security: max-age=31536000; includeSubDomains\ncross-origin-resource-policy: cross-origin\nserver: Google Tag Manager\nx-xss-protection: 0\nalt-svc: h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000\naccept-ranges: none\n\n"
+}

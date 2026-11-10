@@ -11,15 +11,17 @@ class ExternalLink extends StatelessWidget {
     required this.url,
     required this.label,
     required this.child,
+    this.analyticsPlacement,
   });
 
   final String url;
   final String label;
   final Widget child;
+  final String? analyticsPlacement;
 
   @override
   Widget build(BuildContext context) {
-    final browserLink = target.buildBrowserLink(url, label);
+    final browserLink = target.buildBrowserLink(url, label, analyticsPlacement);
     if (browserLink != null) {
       return Stack(
         children: [

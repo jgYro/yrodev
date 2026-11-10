@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yro/main.dart';
 
+import 'font_loader.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(loadSiteFonts);
   for (final width in [320.0, 390.0, 768.0, 1024.0, 1440.0]) {
     testWidgets('Page lays out without overflow at width $width', (
       tester,

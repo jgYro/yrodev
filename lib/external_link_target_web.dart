@@ -7,7 +7,7 @@ extension type _AnchorElement(JSObject _) implements JSObject {
   external void setAttribute(String name, String value);
 }
 
-Widget buildBrowserLink(String url, String label) =>
+Widget buildBrowserLink(String url, String label, String? analyticsPlacement) =>
     HtmlElementView.fromTagName(
       tagName: 'a',
       onElementCreated: (element) {
@@ -17,6 +17,9 @@ Widget buildBrowserLink(String url, String label) =>
         anchor.setAttribute('rel', 'noopener noreferrer');
         anchor.setAttribute('aria-label', label);
         anchor.setAttribute('class', 'yro-external-link');
+        if (analyticsPlacement != null) {
+          anchor.setAttribute('data-analytics-placement', analyticsPlacement);
+        }
         anchor.setAttribute(
           'style',
           'display:block;width:100%;height:100%;box-sizing:border-box;border-radius:6px;',

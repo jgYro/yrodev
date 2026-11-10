@@ -1,0 +1,8 @@
+tree e2401ee5cf09dc98d334565238c570cb3fec38aa
+parent 71f558992315a12ca1f06a2215d57962a1992162
+author Leonardo Costa <155733295+leonardo-costa-IBM@users.noreply.github.com> 1793795303 -0300
+committer GitHub <noreply@github.com> 1793795303 -0300
+
+Build: resolve #GHSA-cg2g-xh64-v4q7 and other Dependabot security alerts (#737)
+
+build: resolve Dependabot security alerts

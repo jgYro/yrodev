@@ -1,0 +1,492 @@
+{
+  "commit": "48e8676114c04f29033b4b53da4ec579f8846297",
+  "tree": "e2401ee5cf09dc98d334565238c570cb3fec38aa",
+  "all_tree_hashes_verified": true,
+  "commit_hash_verified": true,
+  "files": [
+    {
+      "file": "IBMPlexMono-Regular.ttf",
+      "source_path": "packages/plex-mono/fonts/complete/ttf/IBMPlexMono-Regular.ttf",
+      "bytes": 173052,
+      "git_blob_sha1": "4254c37f20ba57e829a3315fdc91cda4e63589f5",
+      "sha256": "7c6fbddca4b700be918f5f6183d9bd4464fa427fe435f0b480d77fe2bb8c5a43",
+      "tables": {
+        "DSIG": {
+          "offset": 173044,
+          "length": 8
+        },
+        "GDEF": {
+          "offset": 164556,
+          "length": 160
+        },
+        "GPOS": {
+          "offset": 164716,
+          "length": 3748
+        },
+        "GSUB": {
+          "offset": 168464,
+          "length": 4520
+        },
+        "OS/2": {
+          "offset": 440,
+          "length": 96
+        },
+        "cmap": {
+          "offset": 5364,
+          "length": 2902
+        },
+        "cvt ": {
+          "offset": 9184,
+          "length": 82
+        },
+        "fpgm": {
+          "offset": 8268,
+          "length": 371
+        },
+        "gasp": {
+          "offset": 164540,
+          "length": 16
+        },
+        "glyf": {
+          "offset": 14100,
+          "length": 136968
+        },
+        "head": {
+          "offset": 316,
+          "length": 54
+        },
+        "hhea": {
+          "offset": 372,
+          "length": 36
+        },
+        "hmtx": {
+          "offset": 536,
+          "length": 4828
+        },
+        "loca": {
+          "offset": 9268,
+          "length": 4832
+        },
+        "maxp": {
+          "offset": 408,
+          "length": 32
+        },
+        "meta": {
+          "offset": 172984,
+          "length": 60
+        },
+        "name": {
+          "offset": 151068,
+          "length": 2383
+        },
+        "post": {
+          "offset": 153452,
+          "length": 11088
+        },
+        "prep": {
+          "offset": 8640,
+          "length": 542
+        }
+      },
+      "names": [
+        [
+          1,
+          "IBM Plex Mono"
+        ],
+        [
+          2,
+          "Regular"
+        ],
+        [
+          5,
+          "Version 2.005"
+        ],
+        [
+          8,
+          "Bold Monday"
+        ],
+        [
+          9,
+          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
+        ],
+        [
+          13,
+          "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
+        ],
+        [
+          14,
+          "http://scripts.sil.org/OFL"
+        ]
+      ],
+      "embedded_web_or_bitmap_tables": [],
+      "hinting_tables": {
+        "fpgm": 371,
+        "prep": 542,
+        "cvt ": 82
+      }
+    },
+    {
+      "file": "IBMPlexSans-Medium.ttf",
+      "source_path": "packages/plex-sans/fonts/complete/ttf/IBMPlexSans-Medium.ttf",
+      "bytes": 202460,
+      "git_blob_sha1": "a3826c4e9ab3f2d6e64e0c9aea7122ea3431e174",
+      "sha256": "331c8639d7598b2cde62a911a71db195e30cb655cd6bdf2e324a7e984955f907",
+      "tables": {
+        "DSIG": {
+          "offset": 202452,
+          "length": 8
+        },
+        "GDEF": {
+          "offset": 133980,
+          "length": 460
+        },
+        "GPOS": {
+          "offset": 134440,
+          "length": 63588
+        },
+        "GSUB": {
+          "offset": 198028,
+          "length": 4350
+        },
+        "OS/2": {
+          "offset": 440,
+          "length": 96
+        },
+        "cmap": {
+          "offset": 4612,
+          "length": 2818
+        },
+        "cvt ": {
+          "offset": 8304,
+          "length": 68
+        },
+        "fpgm": {
+          "offset": 7432,
+          "length": 371
+        },
+        "gasp": {
+          "offset": 133964,
+          "length": 16
+        },
+        "glyf": {
+          "offset": 10412,
+          "length": 111972
+        },
+        "head": {
+          "offset": 316,
+          "length": 54
+        },
+        "hhea": {
+          "offset": 372,
+          "length": 36
+        },
+        "hmtx": {
+          "offset": 536,
+          "length": 4076
+        },
+        "loca": {
+          "offset": 8372,
+          "length": 2040
+        },
+        "maxp": {
+          "offset": 408,
+          "length": 32
+        },
+        "meta": {
+          "offset": 202380,
+          "length": 72
+        },
+        "name": {
+          "offset": 122384,
+          "length": 2534
+        },
+        "post": {
+          "offset": 124920,
+          "length": 9041
+        },
+        "prep": {
+          "offset": 7804,
+          "length": 500
+        }
+      },
+      "names": [
+        [
+          1,
+          "IBM Plex Sans Medm"
+        ],
+        [
+          2,
+          "Regular"
+        ],
+        [
+          5,
+          "Version 3.005"
+        ],
+        [
+          8,
+          "Bold Monday"
+        ],
+        [
+          9,
+          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
+        ],
+        [
+          13,
+          "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
+        ],
+        [
+          14,
+          "http://scripts.sil.org/OFL"
+        ]
+      ],
+      "embedded_web_or_bitmap_tables": [],
+      "hinting_tables": {
+        "fpgm": 371,
+        "prep": 500,
+        "cvt ": 68
+      }
+    },
+    {
+      "file": "IBMPlexSans-Regular.ttf",
+      "source_path": "packages/plex-sans/fonts/complete/ttf/IBMPlexSans-Regular.ttf",
+      "bytes": 200500,
+      "git_blob_sha1": "bd6817d5202895da5ac4fad88de3da71e652881a",
+      "sha256": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5",
+      "tables": {
+        "DSIG": {
+          "offset": 200492,
+          "length": 8
+        },
+        "GDEF": {
+          "offset": 134688,
+          "length": 460
+        },
+        "GPOS": {
+          "offset": 135148,
+          "length": 60920
+        },
+        "GSUB": {
+          "offset": 196068,
+          "length": 4350
+        },
+        "OS/2": {
+          "offset": 440,
+          "length": 96
+        },
+        "cmap": {
+          "offset": 4612,
+          "length": 2818
+        },
+        "cvt ": {
+          "offset": 8280,
+          "length": 68
+        },
+        "fpgm": {
+          "offset": 7432,
+          "length": 371
+        },
+        "gasp": {
+          "offset": 134672,
+          "length": 16
+        },
+        "glyf": {
+          "offset": 10388,
+          "length": 112856
+        },
+        "head": {
+          "offset": 316,
+          "length": 54
+        },
+        "hhea": {
+          "offset": 372,
+          "length": 36
+        },
+        "hmtx": {
+          "offset": 536,
+          "length": 4076
+        },
+        "loca": {
+          "offset": 8348,
+          "length": 2040
+        },
+        "maxp": {
+          "offset": 408,
+          "length": 32
+        },
+        "meta": {
+          "offset": 200420,
+          "length": 72
+        },
+        "name": {
+          "offset": 123244,
+          "length": 2384
+        },
+        "post": {
+          "offset": 125628,
+          "length": 9041
+        },
+        "prep": {
+          "offset": 7804,
+          "length": 476
+        }
+      },
+      "names": [
+        [
+          1,
+          "IBM Plex Sans"
+        ],
+        [
+          2,
+          "Regular"
+        ],
+        [
+          5,
+          "Version 3.005"
+        ],
+        [
+          8,
+          "Bold Monday"
+        ],
+        [
+          9,
+          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
+        ],
+        [
+          13,
+          "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
+        ],
+        [
+          14,
+          "http://scripts.sil.org/OFL"
+        ]
+      ],
+      "embedded_web_or_bitmap_tables": [],
+      "hinting_tables": {
+        "fpgm": 371,
+        "prep": 476,
+        "cvt ": 68
+      }
+    },
+    {
+      "file": "IBMPlexSans-SemiBold.ttf",
+      "source_path": "packages/plex-sans/fonts/complete/ttf/IBMPlexSans-SemiBold.ttf",
+      "bytes": 202632,
+      "git_blob_sha1": "09ec8cdae8208c26165db0c87da409cda8c26ae4",
+      "sha256": "a20caf8286023a6a7a85e40b1d2a4ae9fc3e3b1f9eda8f4c542dd4986af67bb1",
+      "tables": {
+        "DSIG": {
+          "offset": 202624,
+          "length": 8
+        },
+        "GDEF": {
+          "offset": 134144,
+          "length": 460
+        },
+        "GPOS": {
+          "offset": 134604,
+          "length": 63596
+        },
+        "GSUB": {
+          "offset": 198200,
+          "length": 4350
+        },
+        "OS/2": {
+          "offset": 440,
+          "length": 96
+        },
+        "cmap": {
+          "offset": 4612,
+          "length": 2818
+        },
+        "cvt ": {
+          "offset": 8332,
+          "length": 70
+        },
+        "fpgm": {
+          "offset": 7432,
+          "length": 371
+        },
+        "gasp": {
+          "offset": 134128,
+          "length": 16
+        },
+        "glyf": {
+          "offset": 10444,
+          "length": 112088
+        },
+        "head": {
+          "offset": 316,
+          "length": 54
+        },
+        "hhea": {
+          "offset": 372,
+          "length": 36
+        },
+        "hmtx": {
+          "offset": 536,
+          "length": 4076
+        },
+        "loca": {
+          "offset": 8404,
+          "length": 2040
+        },
+        "maxp": {
+          "offset": 408,
+          "length": 32
+        },
+        "meta": {
+          "offset": 202552,
+          "length": 72
+        },
+        "name": {
+          "offset": 122532,
+          "length": 2549
+        },
+        "post": {
+          "offset": 125084,
+          "length": 9041
+        },
+        "prep": {
+          "offset": 7804,
+          "length": 526
+        }
+      },
+      "names": [
+        [
+          1,
+          "IBM Plex Sans SmBld"
+        ],
+        [
+          2,
+          "Regular"
+        ],
+        [
+          5,
+          "Version 3.005"
+        ],
+        [
+          8,
+          "Bold Monday"
+        ],
+        [
+          9,
+          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
+        ],
+        [
+          13,
+          "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
+        ],
+        [
+          14,
+          "http://scripts.sil.org/OFL"
+        ]
+      ],
+      "embedded_web_or_bitmap_tables": [],
+      "hinting_tables": {
+        "fpgm": 371,
+        "prep": 526,
+        "cvt ": 70
+      }
+    }
+  ]
+}
