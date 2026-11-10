@@ -7,5 +7,5 @@
   "theme_color": "#050505",
   "description": "Software, cybersecurity, applied AI, and creative media for people and organizations.",
   "prefer_related_applications": false,
-  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+  "icons": [{ "src": "favicon.svg?v=20261110", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

@@ -1,1 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#050505"/><path d="M0 60h32v4H0z" fill="#7E1025"/><path d="M32 60h32v4H32z" fill="#B49BD6"/><path d="M13 14h10l9 13-6 7zm29 0h11L36 37v14H26V35z" fill="#FFFFFF"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <title>Yro</title>
+  <style>
+    .compact { display: none; }
+    @media (max-width: 48px) {
+      .full { display: none; }
+      .compact { display: inline; }
+    }
+  </style>
+  <defs>
+    <!-- The central mark uses the exact coordinates from CircuitPainter. -->
+    <g id="mark">
+      <circle cx="250" cy="224" r="66" fill="#7E1025" stroke="#A8344B"/>
+      <circle cx="250" cy="224" r="61" fill="none" stroke="#FFFFFF" stroke-opacity=".22"/>
+      <path d="M211 184H229L249 212L239 226Z M274 184H293L261 228V265H242V225Z" fill="#FFFFFF"/>
+    </g>
+    <circle id="petal" cx="0" cy="-86" r="86"/>
+    <path id="minor-tick" d="M178 0H181" stroke="#FFFFFF" stroke-opacity=".28"/>
+    <path id="major-tick" d="M178 0H187" stroke="#FFFFFF" stroke-opacity=".6"/>
+    <g id="quarter">
+      <use href="#major-tick"/>
+      <use href="#minor-tick" transform="rotate(7.5)"/>
+      <use href="#minor-tick" transform="rotate(15)"/>
+      <use href="#minor-tick" transform="rotate(22.5)"/>
+      <use href="#major-tick" transform="rotate(30)"/>
+      <use href="#minor-tick" transform="rotate(37.5)"/>
+      <use href="#minor-tick" transform="rotate(45)"/>
+      <use href="#minor-tick" transform="rotate(52.5)"/>
+      <use href="#major-tick" transform="rotate(60)"/>
+      <use href="#minor-tick" transform="rotate(67.5)"/>
+      <use href="#minor-tick" transform="rotate(75)"/>
+      <use href="#minor-tick" transform="rotate(82.5)"/>
+    </g>
+  </defs>
+  <!-- Larger icon views retain the app's circuit and geometric construction. -->
+  <g class="full" transform="translate(0 26)">
+    <g fill="none" stroke-width="1">
+      <path d="M6 52H99L140 93 M496 56H405L367 94 M8 366H87L127 326 M497 361H413L376 324 M250 8V37 M5 224H62" stroke="#FFFFFF" stroke-opacity=".42"/>
+      <path d="M5 69H91L129 107 M497 74H413L379 108 M5 384H94L140 338 M497 380H404L363 339 M250 410V440 M438 224H495" stroke="#B49BD6" stroke-opacity=".6"/>
+      <circle cx="250" cy="224" r="182" stroke="#A8344B"/>
+      <circle cx="250" cy="224" r="174" stroke="#FFFFFF" stroke-opacity=".48"/>
+      <circle cx="250" cy="224" r="150" stroke="#B49BD6" stroke-opacity=".18"/>
+      <g transform="translate(250 224)">
+        <g stroke="#B49BD6" stroke-opacity=".42">
+          <circle r="86"/>
+          <use href="#petal"/>
+          <use href="#petal" transform="rotate(60)"/>
+          <use href="#petal" transform="rotate(120)"/>
+          <use href="#petal" transform="rotate(180)"/>
+          <use href="#petal" transform="rotate(240)"/>
+          <use href="#petal" transform="rotate(300)"/>
+        </g>
+        <path d="M0 -172L148.956 -86L148.956 86L0 172L-148.956 86L-148.956 -86Z" stroke="#FFFFFF" stroke-opacity=".27"/>
+        <use href="#quarter"/>
+        <use href="#quarter" transform="rotate(90)"/>
+        <use href="#quarter" transform="rotate(180)"/>
+        <use href="#quarter" transform="rotate(270)"/>
+      </g>
+    </g>
+    <path d="M4 50h4v4H4Z M3 67h4v4H3Z M494 54h4v4h-4Z M495 72h4v4h-4Z M6 364h4v4H6Z M3 382h4v4H3Z M495 359h4v4h-4Z M495 378h4v4h-4Z M248 6h4v4h-4Z M248 408h4v4h-4Z M3 222h4v4H3Z M436 222h4v4h-4Z" fill="#A8344B"/>
+    <use href="#mark"/>
+  </g>
+  <!-- At tab sizes, enlarge the same red-circle mark instead of shrinking its Y. -->
+  <use class="compact" href="#mark" transform="translate(250 250) scale(3.4) translate(-250 -224)"/>
+</svg>

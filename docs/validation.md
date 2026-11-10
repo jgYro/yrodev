@@ -1,5 +1,11 @@
 # Site validation
 
+## App-emblem favicon - 2026-11-10
+
+The SVG favicon now reproduces `CircuitPainter`'s white split Y, blood-red disk, rings, and circuit geometry. At icon viewports up to 48 pixels it enlarges the same central disk/Y for legibility; larger views show the complete emblem. The HTML and web manifest use `favicon.svg?v=20261110` to distinguish it from cached earlier icons. No dependencies or Dart application code changed.
+
+The release web build passed with the existing lockfile. SVG/XML parsing, manifest JSON parsing, and whitespace checks passed. Playwright MCP rendered the icon at 16, 32, 48, and 360 pixels, including light and dark backgrounds, and the screenshots were visually inspected. The rebuilt application loaded under the Hosting CSP with matching HTML/manifest icon URLs, an HTTP 200 SVG response, and no page errors or failed requests. Analytics remained unconsented. Earlier application tests remain applicable because the application code and dependency graph are unchanged.
+
 ## Pre-commit review - 2026-11-10
 
 Reviewed the consent-based Analytics integration, IBM Plex assets and theme, Hosting policy, and repository documentation. No blocking issues were found in this review.
