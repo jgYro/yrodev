@@ -1,6 +1,12 @@
 # Firebase Hosting deployment
 
-## Current release: black, white, blood red, purple, and IBM Plex
+## Current release: app-emblem favicon
+
+On 2026-11-10, source commit `dd73ac3` was deployed as Hosting version `projects/228228369868/sites/yro-llc/versions/9de89862bd7298db` to [yro.dev](https://yro.dev/). The favicon now uses the app's white split Y inside its blood-red circle, with the complete circuit emblem at larger sizes and an enlarged central mark at tab sizes. The HTML and manifest both reference `favicon.svg?v=20261110` so browsers can distinguish the replacement from cached icons.
+
+The release build and Playwright MCP checks passed. Live page/icon responses returned HTTP 200; the SVG SHA-256 matches the source and build (`e823af3716df0b3107c98fcc88653b842c352357f9afc710359ed1686f325787`), and the live manifest matches the build. No page errors, failed requests, or external requests were observed during the unconsented live check. The update adds no dependencies and leaves Dart application code unchanged. See [validation.md](validation.md).
+
+## 2026-11-09 release: black, white, blood red, purple, and IBM Plex
 
 On 2026-11-09, the visual refresh was deployed as Hosting version `projects/228228369868/sites/yro-llc/versions/f89fed723c5b9267` to [yro.dev](https://yro.dev/). The design uses flat near-black surfaces, white type, dark blood-red action surfaces, purple graphic accents, square controls, and a matching favicon/loading state. IBM Plex Sans is used for main typography and IBM Plex Mono for navigation/labels. Four unmodified font files are self-hosted under their OFL license after the [pinned-font assessment](security/supply-chain/2026-11-09-ibm-plex/ASSESSMENT.md); Pub dependency versions remain unchanged.
 
